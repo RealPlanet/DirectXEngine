@@ -11,7 +11,8 @@ public:
 	//Release the window
 	bool release();
 	bool isRunning();
-	
+	RECT getClientWindowRect();
+	void setHWND(HWND hwnd);
 
 	//Window EVENTS
 	virtual void onCreate() = 0;
@@ -20,6 +21,6 @@ public:
 
 protected:
 	HWND m_hwnd = NULL;
-	bool m_isRunning = false;;
+	bool m_isRunning = false;
 };
 

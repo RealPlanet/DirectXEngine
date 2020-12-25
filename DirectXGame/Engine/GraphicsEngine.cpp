@@ -44,7 +44,10 @@ bool GraphicsEngine::init()
 	{
 		return false;
 	}
-		
+
+	m_d3d_device->QueryInterface(_uuidof(IDXGIDevice), (void**)&m_dxgi_device);
+	m_dxgi_device->GetParent(_uuidof(IDXGIAdapter), (void**)&m_dxgi_adapter);
+	m_dxgi_adapter->GetParent(_uuidof(IDXGIFactory), (void**)&m_dxgi_factory);
 
 	return true;
 }
@@ -52,6 +55,10 @@ bool GraphicsEngine::init()
 // Release all of the resources used by the graphics engine
 bool GraphicsEngine::release()
 {
+	m_dxgi_device->Release();
+	m_dxgi_adapter->Release();
+	m_dxgi_factory->Release();
+
 	m_imm_context->Release();
 	m_d3d_device->Release();
 
@@ -63,4 +70,9 @@ GraphicsEngine* GraphicsEngine::get()
 {
 	static GraphicsEngine engine;
 	return &engine;
+}
+
+SwapChain* GraphicsEngine::createSwapChain()
+{
+	return new SwapChain();
 }
