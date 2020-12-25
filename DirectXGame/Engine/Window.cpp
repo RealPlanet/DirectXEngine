@@ -106,7 +106,3 @@ void Window::onDestroy()
 {
 	m_isRunning = false;
 }
-
-Window::~Window()
-{
-}

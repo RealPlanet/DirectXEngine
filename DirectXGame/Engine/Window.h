@@ -4,7 +4,6 @@
 class Window
 {
 public:
-	//Window();
 	//Initialize the window
 	bool init();
 	bool broadcast();
@@ -19,7 +18,6 @@ public:
 	virtual void onUpdate() = 0;
 	virtual void onDestroy();
 
-	~Window();
 protected:
 	HWND m_hwnd = NULL;
 	bool m_isRunning = false;;
