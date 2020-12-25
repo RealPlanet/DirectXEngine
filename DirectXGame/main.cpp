@@ -1,5 +1,5 @@
-#include "AppWindow.h"
 #include <iostream>
+#include "AppWindow.h"
 
 
 int main()
