@@ -74,6 +74,7 @@ bool Window::init()
 bool Window::broadcast()
 {
 	MSG message;
+	this->onUpdate();
 
 	while ( PeekMessage(&message, NULL, 0, 0, PM_REMOVE) > 0 )
 	{
@@ -81,7 +82,7 @@ bool Window::broadcast()
 		DispatchMessage(&message);
 	}
 
-	this->onUpdate();
+	
 	Sleep(1);
 
 	return true;

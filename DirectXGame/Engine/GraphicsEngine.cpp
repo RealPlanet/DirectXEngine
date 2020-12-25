@@ -45,6 +45,8 @@ bool GraphicsEngine::init()
 		return false;
 	}
 
+	m_imm_device_context = new DeviceContext(m_imm_context);
+
 	m_d3d_device->QueryInterface(_uuidof(IDXGIDevice), (void**)&m_dxgi_device);
 	m_dxgi_device->GetParent(_uuidof(IDXGIAdapter), (void**)&m_dxgi_adapter);
 	m_dxgi_adapter->GetParent(_uuidof(IDXGIFactory), (void**)&m_dxgi_factory);
@@ -58,6 +60,8 @@ bool GraphicsEngine::release()
 	m_dxgi_device->Release();
 	m_dxgi_adapter->Release();
 	m_dxgi_factory->Release();
+
+	m_imm_device_context->release();
 
 	m_imm_context->Release();
 	m_d3d_device->Release();
@@ -75,4 +79,9 @@ GraphicsEngine* GraphicsEngine::get()
 SwapChain* GraphicsEngine::createSwapChain()
 {
 	return new SwapChain();
+}
+
+DeviceContext* GraphicsEngine::getImmediateDeviceContext()
+{
+	return this->m_imm_device_context;
 }
