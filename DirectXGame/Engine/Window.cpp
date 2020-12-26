@@ -119,4 +119,5 @@ void Window::setHWND(HWND hwnd)
 void Window::onDestroy()
 {
 	m_isRunning = false;
+	//this->release();
 }
