@@ -20,6 +20,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 			//Event fired when window needs to be destroyed
 			Window* window = (Window*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 			window->onDestroy();
+			//window->release();
 			PostQuitMessage(0);
 			break;
 		}

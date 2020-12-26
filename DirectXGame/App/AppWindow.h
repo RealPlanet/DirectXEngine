@@ -10,5 +10,7 @@ public:
 	virtual void onUpdate() override;
 	virtual void onDestroy() override;
 private:
+	SwapChain* m_swap_chain = nullptr;
+	VertexBuffer* m_vertex_buffer = nullptr;
 };
 
