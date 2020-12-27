@@ -3,6 +3,7 @@
 #include <SwapChain.h>
 #include "DeviceContext.h"
 #include <VertexBuffer.h>
+#include <ConstantBuffer.h>
 #include <VertexShader.h>
 #include <PixelShader.h>
 
@@ -18,6 +19,7 @@ public:
 	SwapChain* createSwapChain();
 	DeviceContext* getImmediateDeviceContext();
 	VertexBuffer* createVertexBuffer();
+	ConstantBuffer* createConstantBuffer();
 
 	VertexShader* createVertexShader(const void* shader_bytecode, size_t bytecode_size);
 	PixelShader*  createPixelShader(const void* shader_bytecode, size_t bytecode_size);
@@ -44,6 +46,7 @@ private:
 
 	friend class SwapChain;
 	friend class VertexBuffer;
+	friend class ConstantBuffer;
 	friend class VertexShader;
 	friend class PixelShader;
 	friend class VertexShader;

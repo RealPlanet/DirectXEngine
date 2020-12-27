@@ -92,6 +92,11 @@ VertexBuffer* GraphicsEngine::createVertexBuffer()
 	return new VertexBuffer();
 }
 
+ConstantBuffer* GraphicsEngine::createConstantBuffer()
+{
+	return new ConstantBuffer();
+}
+
 VertexShader* GraphicsEngine::createVertexShader(const void* shader_bytecode, size_t bytecode_size)
 {
 	VertexShader* vertex_shader = new VertexShader();
