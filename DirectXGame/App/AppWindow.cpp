@@ -2,6 +2,37 @@
 #include "generics.h"
 #include <Windows.h>
 
+void AppWindow::updateQuadPosition()
+{
+	constant cc;
+	cc.m_time = GetTickCount();
+	m_delta_pos += m_delta_time  / 5.0f;
+	if (m_delta_pos > 1.0f) m_delta_pos = 0;
+	m_delta_scale += m_delta_time / 10.0f;
+	if (m_delta_scale > 1.0f) m_delta_scale = 0;
+
+	Matrix4x4 temp;
+	temp.setIdentity();
+	//cc.m_world.setTranslation(Vector3D::lerp(Vector3D(-2, -2, 0), Vector3D(2, 2, 0), m_delta_pos));
+
+	//IMPORTANT :: Scale before translation!! OR Invert multiplication S X T = Final Matrix
+	cc.m_world.setScale(Vector3D::lerp(Vector3D(0, 0, 0), Vector3D(1.0f, 1.0f, 0), sin(m_delta_scale)));
+	temp.setTranslation(Vector3D::lerp(Vector3D(-1.5f, -1.5f, 0), Vector3D(1.5f, 1.5f, 0), m_delta_pos));
+
+	cc.m_world *= temp;
+
+	cc.m_view.setIdentity();
+	cc.m_projection.setOrthoLH
+	(
+		(this->getClientWindowRect().right - this->getClientWindowRect().left) / 400.0f,
+		(this->getClientWindowRect().bottom - this->getClientWindowRect().top) / 400.0f,
+		-4.0f,
+		4.0f
+	);
+
+
+	m_constant_buffer->update(GraphicsEngine::get()->getImmediateDeviceContext(), &cc);
+}
 
 void AppWindow::onCreate()
 {
@@ -14,10 +45,10 @@ void AppWindow::onCreate()
 	// Triangle strip aproach
 	vertex list[] = {
 		// X - Y - Z ---------- X1 - Y1 - Z1	----------  R- G- B --- R-G-B
-		{-0.5f, -0.5f, 0.0f,	-0.32f, -0.55f, 0.0f,		1, 0, 0,	0,0,0},	//Position 1
-		{-0.5f, 0.5f, 0.0f,		-0.68f, 0.78f, 0.0f,		1, 1, 0,	0,0,1},   //Position 2
-		{0.5f, -0.5f, 0.0f,		0.58f, -0.511f, 0.0f,		0, 0, 0,	1,1,1},	//Position 3
-		{0.5f, 0.5f, 0.0f,		0.68f, 0.8f, 0.0f,			1, 0, 1,	0,1,0}	//Position 4
+		{Vector3D(-0.5f, -0.5f, 0.0f),		Vector3D(-0.32f, -0.55f, 0.0f),		Vector3D(1, 0, 0),	Vector3D(0,0,0)},	//Position 1
+		{Vector3D(-0.5f, 0.5f, 0.0f),		Vector3D(-0.68f, 0.78f, 0.0f),		Vector3D(1, 1, 0),	Vector3D(0,0,1)},   //Position 2
+		{Vector3D(0.5f, -0.5f, 0.0f),		Vector3D(0.58f, -0.511f, 0.0f),		Vector3D(0, 0, 0),	Vector3D(1,1,1)},	//Position 3
+		{Vector3D(0.5f, 0.5f, 0.0f),		Vector3D(0.68f, 0.8f, 0.0f),		Vector3D(1, 0, 1),	Vector3D(0,1,0)}	//Position 4
 	};
 
 	m_vertex_buffer = GraphicsEngine::get()->createVertexBuffer();
@@ -48,9 +79,7 @@ void AppWindow::onUpdate()
 	RECT rect = this->getClientWindowRect();
 	GraphicsEngine::get()->getImmediateDeviceContext()->setViewportSize(rect.right - rect.left, rect.bottom - rect.top);
 
-	constant cc;
-	cc.m_time = GetTickCount();
-	m_constant_buffer->update(GraphicsEngine::get()->getImmediateDeviceContext(), &cc);
+	updateQuadPosition();
 	GraphicsEngine::get()->getImmediateDeviceContext()->setConstantBuffer(m_vertex_shader, m_constant_buffer);
 	GraphicsEngine::get()->getImmediateDeviceContext()->setConstantBuffer(m_pixel_shader, m_constant_buffer);
 
@@ -62,6 +91,10 @@ void AppWindow::onUpdate()
 	GraphicsEngine::get()->getImmediateDeviceContext()->drawTriangleStrip(m_vertex_buffer->getSizeVertexList(), 0);
 
 	m_swap_chain->present(false);
+
+	m_old_delta = m_new_delta;
+	m_new_delta = GetTickCount();
+	m_delta_time = m_old_delta ? (m_new_delta - m_old_delta) / 1000.0f : 0;
 }
 
 void AppWindow::onDestroy()

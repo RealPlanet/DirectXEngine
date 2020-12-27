@@ -29,7 +29,7 @@ public:
 
 	void releaseCompiledShader();
 private:
-	D3D_FEATURE_LEVEL m_feature_level;
+	D3D_FEATURE_LEVEL m_feature_level = {};
 	ID3D11Device* m_d3d_device = nullptr;
 	ID3D11DeviceContext* m_imm_context = nullptr;
 	IDXGIDevice* m_dxgi_device = nullptr;
