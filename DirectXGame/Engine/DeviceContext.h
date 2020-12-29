@@ -5,6 +5,7 @@
 #include <VertexShader.h>
 #include <PixelShader.h>
 #include <ConstantBuffer.h>
+#include <IndexBuffer.h>
 
 class ConstantBuffer; //Forward declaration
 
@@ -15,7 +16,9 @@ public:
 	bool release();
 	void clearRenderTargetColor(SwapChain* swap_chain, float red, float green, float blue, float alpha);
 	void setVertexBuffer(VertexBuffer* vertex_buffer);
+	void setIndexBuffer(IndexBuffer* index_buffer);
 	void drawTriangleList(UINT vertex_count, UINT start_vertex_index);
+	void drawIndexedTriangleList(UINT index_count, UINT start_vertex_index,UINT start_index_loation);
 	void drawTriangleStrip(UINT vertex_count, UINT start_vertex_index);
 	void setViewportSize(UINT width, UINT height);
 	void setVertexShader(VertexShader* vertex_shader);

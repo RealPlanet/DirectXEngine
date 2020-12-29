@@ -39,6 +39,30 @@ public:
 		matrix[3][2] = -(near_plane / (far_plane - near_plane));
 	}
 
+	void setRotationX(float x)
+	{
+		matrix[1][1] =	cos(x);
+		matrix[1][2] =	sin(x);
+		matrix[2][1] = -sin(x);
+		matrix[2][2] =	cos(x);
+	}
+
+	void setRotationY(float y)
+	{
+		matrix[0][0] =	cos(y);
+		matrix[0][2] = -sin(y);
+		matrix[2][0] =	sin(y);
+		matrix[2][2] =	cos(y);
+	}
+
+	void setRotationZ(float z)
+	{
+		matrix[0][0] = cos(z);
+		matrix[0][1] = sin(z);
+		matrix[1][0] = -sin(z);
+		matrix[1][1] = cos(z);
+	}
+
 	void operator*=(Matrix4x4 other)
 	{
 		Matrix4x4 res;

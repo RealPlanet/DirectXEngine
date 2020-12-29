@@ -14,6 +14,7 @@ public:
 private:
 	SwapChain* m_swap_chain = nullptr;
 	VertexBuffer* m_vertex_buffer = nullptr;
+	IndexBuffer* m_index_buffer = nullptr;
 	ConstantBuffer* m_constant_buffer = nullptr;
 
 	VertexShader* m_vertex_shader = nullptr;
