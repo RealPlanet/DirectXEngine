@@ -61,7 +61,7 @@ void AppWindow::onCreate()
 		// Front face of the cube
 		{Vector3D(-0.5f, -0.5f, -0.5f),			Vector3D(1, 1, 1)			,	Vector3D(0, 0, 0)},		//Position 0
 		{Vector3D(-0.5f, 0.5f, -0.5f),			Vector3D(0, 0, 0)			,	Vector3D(0, 0, 0)},		//Position 1
-		{Vector3D(0.5f, 0.5f, -0.5f),			Vector3D(1, 0, 0)			,	Vector3D(0, 0, 0)},	//Position 2
+		{Vector3D(0.5f, 0.5f, -0.5f),			Vector3D(1, 0, 0)			,	Vector3D(0, 0, 0)},		//Position 2
 		{Vector3D(0.5f, -0.5f, -0.5f),			Vector3D(0, 1, 0)			,	Vector3D(0, 0, 0)},		//Position 3
 
 		// Back face of the cube
