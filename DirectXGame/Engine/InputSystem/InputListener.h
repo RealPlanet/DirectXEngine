@@ -4,17 +4,6 @@ class Point;
 class InputListener
 {
 public:
-	
-	InputListener()
-	{
-			
-	}
-
-	~InputListener()
-	{
-
-	}
-
 	//Virtual interface for keyboard
 
 	virtual void onKeyDown(int key) = 0;

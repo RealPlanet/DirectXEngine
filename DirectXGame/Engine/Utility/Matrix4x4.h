@@ -1,67 +1,25 @@
 #pragma once
 #include <memory>
-#include <Vector3D.h>
 
+class Vector3D;
+class Vector4D;
 class Matrix4x4
 {
 public:
-	void setIdentity()
-	{
-		memset(matrix, 0, sizeof(float) * 16);
-		matrix[0][0] = 1;
-		matrix[1][1] = 1;
-		matrix[2][2] = 1;
-		matrix[3][3] = 1;
-	}
-
-	void setTranslation(const Vector3D& translation)
-	{
-		setIdentity();
-		matrix[3][0] = translation.x;
-		matrix[3][1] = translation.y;
-		matrix[3][2] = translation.z;
-	}
-
-	void setScale(const Vector3D& scale)
-	{
-		setIdentity();
-		matrix[0][0] = scale.x;
-		matrix[1][1] = scale.y;
-		matrix[2][2] = scale.z;
-	}
-
-	void setOrthoLH(float width, float height, float near_plane, float far_plane)
-	{
-		setIdentity();
-		matrix[0][0] = 2.0f / width;
-		matrix[1][1] = 2.0f / height;
-		matrix[2][2] = 1.0f / (far_plane - near_plane);
-		matrix[3][2] = -(near_plane / (far_plane - near_plane));
-	}
-
-	void setRotationX(float x)
-	{
-		matrix[1][1] =	cos(x);
-		matrix[1][2] =	sin(x);
-		matrix[2][1] = -sin(x);
-		matrix[2][2] =	cos(x);
-	}
-
-	void setRotationY(float y)
-	{
-		matrix[0][0] =	cos(y);
-		matrix[0][2] = -sin(y);
-		matrix[2][0] =	sin(y);
-		matrix[2][2] =	cos(y);
-	}
-
-	void setRotationZ(float z)
-	{
-		matrix[0][0] = cos(z);
-		matrix[0][1] = sin(z);
-		matrix[1][0] = -sin(z);
-		matrix[1][1] = cos(z);
-	}
+	void setIdentity();
+	void setTranslation(const Vector3D& translation);
+	void setScale(const Vector3D& scale);
+	void setPerspectiveFovLH(float fov, float aspect, float zNear, float zFar);
+	void setOrthoLH(float width, float height, float near_plane, float far_plane);
+	void setRotationX(float x);
+	void setRotationY(float y);
+	void setRotationZ(float z);
+	float getDeterminant();
+	void setMatrix(const Matrix4x4& matrix);
+	Vector3D getZDirection();
+	Vector3D getXDirection();
+	Vector3D getTranslation();
+	void inverse();
 
 	void operator*=(Matrix4x4 other)
 	{

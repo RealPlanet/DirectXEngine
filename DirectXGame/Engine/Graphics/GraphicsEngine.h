@@ -1,12 +1,12 @@
 #pragma once
 #include <d3d11.h>
-#include <SwapChain.h>
+#include "SwapChain.h"
 #include "DeviceContext.h"
-#include <VertexBuffer.h>
-#include <ConstantBuffer.h>
-#include <VertexShader.h>
-#include <PixelShader.h>
-#include <IndexBuffer.h>
+#include "VertexBuffer.h"
+#include "ConstantBuffer.h"
+#include "VertexShader.h"
+#include "PixelShader.h"
+#include "IndexBuffer.h"
 
 class GraphicsEngine
 {

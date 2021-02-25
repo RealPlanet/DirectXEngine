@@ -1,6 +1,5 @@
 #include "InputSystem.h"
 
-
 InputSystem* InputSystem::get()
 {
     static InputSystem system;

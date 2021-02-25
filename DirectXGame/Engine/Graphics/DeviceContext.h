@@ -4,7 +4,6 @@
 #include <VertexBuffer.h>
 #include <VertexShader.h>
 #include <PixelShader.h>
-#include <ConstantBuffer.h>
 #include <IndexBuffer.h>
 
 class ConstantBuffer; //Forward declaration
