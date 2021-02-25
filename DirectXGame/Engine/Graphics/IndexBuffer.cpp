@@ -1,7 +1,9 @@
 #include "IndexBuffer.h"
-#include "GraphicsEngine.h"
+#include "RenderSystem.h"
+#include <exception>
 
-bool IndexBuffer::load(void* list_indices, UINT list_size)
+IndexBuffer::IndexBuffer(RenderSystem* system, void* list_indices, UINT list_size)
+    : m_system{ system }
 {
     if (m_buffer) m_buffer->Release();
 
@@ -18,20 +20,15 @@ bool IndexBuffer::load(void* list_indices, UINT list_size)
     m_size_list = list_size;
 
 
-    if (FAILED(GraphicsEngine::get()->m_d3d_device->CreateBuffer(&buffer_description, &init_data, &m_buffer)))
+    if (FAILED(m_system->m_d3d_device->CreateBuffer(&buffer_description, &init_data, &m_buffer)))
     {
-        return false;
+        throw std::exception("IndexBuffer not created successfully");
     }
-
-
-    return true;
 }
 
-bool IndexBuffer::release()
+IndexBuffer::~IndexBuffer()
 {
     m_buffer->Release();
-    delete this;
-    return true;
 }
 
 UINT IndexBuffer::getSizeIndexList()

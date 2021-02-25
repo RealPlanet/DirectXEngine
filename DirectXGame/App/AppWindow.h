@@ -1,8 +1,18 @@
 #pragma once
 #include "Window.h"
-#include "GraphicsEngine.h"
-#include "InputListener.h"
 #include "Matrix4x4.h"
+#include "RenderSystem.h"
+#include "InputListener.h"
+#include "generics.h"
+#include "InputSystem.h"
+#include "ConstantBuffer.h"
+#include "GraphicsEngine.h"
+#include "SwapChain.h"
+#include "IndexBuffer.h"
+#include "VertexBuffer.h"
+#include "VertexShader.h"
+#include "PixelShader.h"
+#include "DeviceContext.h"
 
 class AppWindow : public Window, public InputListener
 {

@@ -1,7 +1,4 @@
 #include "AppWindow.h"
-#include "generics.h"
-#include "InputSystem.h"
-
 #include <Windows.h>
 
 void AppWindow::update()
@@ -41,19 +38,16 @@ void AppWindow::update()
 
 	cc.m_projection.setPerspectiveFovLH(1.57f, float(width)/float(height), 0.1f, 100.0f);
 
-	m_constant_buffer->update(GraphicsEngine::get()->getImmediateDeviceContext(), &cc);
+	m_constant_buffer->update(GraphicsEngine::get()->getRenderSystem()->getImmediateDeviceContext(), &cc);
 }
 
 void AppWindow::onCreate()
 {
+	RECT rect = this->getClientWindowRect();
 	InputSystem::get()->addListener(this);
 	InputSystem::get()->showCursor(false);
-
 	GraphicsEngine::get()->init();
-	m_swap_chain = GraphicsEngine::get()->createSwapChain();
-
-	RECT rect = this->getClientWindowRect();
-	m_swap_chain->init(this->m_hwnd, rect.right - rect.left, rect.bottom - rect.top);
+	m_swap_chain = GraphicsEngine::get()->getRenderSystem()->createSwapChain(this->m_hwnd, rect.right - rect.left, rect.bottom - rect.top);
 	m_world_cam.setTranslation(Vector3D(0, 0, -2));
 	// Test cube
 	vertex list[] = {
@@ -98,51 +92,49 @@ void AppWindow::onCreate()
 	};
 	UINT list_size = ARRAYSIZE(list);
 	UINT index_size = ARRAYSIZE(index_list);
-	m_vertex_buffer = GraphicsEngine::get()->createVertexBuffer();
-	m_index_buffer = GraphicsEngine::get()->createIndexBuffer();
-
-	m_index_buffer->load(index_list, index_size);
+	m_index_buffer = GraphicsEngine::get()->getRenderSystem()->createIndexBuffer(index_list, index_size);
 
 	void* shader_bytecode = nullptr;
 	size_t shader_size = 0;
 
-	GraphicsEngine::get()->compileVertexShader(L"Shaders\\VertexShader.hlsl", "main", &shader_bytecode, &shader_size);
-	m_vertex_shader = GraphicsEngine::get()->createVertexShader(shader_bytecode, shader_size);
-	m_vertex_buffer->load(list, sizeof(vertex), list_size, shader_bytecode, (UINT)shader_size );
-	GraphicsEngine::get()->releaseCompiledShader();
+	GraphicsEngine::get()->getRenderSystem()->compileVertexShader(L"Shaders\\VertexShader.hlsl", "main", &shader_bytecode, &shader_size);
+	m_vertex_shader = GraphicsEngine::get()->getRenderSystem()->createVertexShader(shader_bytecode, shader_size);
+	m_vertex_buffer = GraphicsEngine::get()->getRenderSystem()->createVertexBuffer(list, sizeof(vertex), list_size, shader_bytecode, (UINT)shader_size);
 
-	GraphicsEngine::get()->compilePixelShader(L"Shaders\\PixelShader.hlsl", "main", &shader_bytecode, &shader_size);
-	m_pixel_shader = GraphicsEngine::get()->createPixelShader(shader_bytecode, shader_size);
-	GraphicsEngine::get()->releaseCompiledShader();
+	GraphicsEngine::get()->getRenderSystem()->releaseCompiledShader();
+
+	GraphicsEngine::get()->getRenderSystem()->compilePixelShader(L"Shaders\\PixelShader.hlsl", "main", &shader_bytecode, &shader_size);
+	m_pixel_shader = GraphicsEngine::get()->getRenderSystem()->createPixelShader(shader_bytecode, shader_size);
+	GraphicsEngine::get()->getRenderSystem()->releaseCompiledShader();
 
 	constant cc;
 	cc.m_time = 0;
-	m_constant_buffer = GraphicsEngine::get()->createConstantBuffer();
-	m_constant_buffer->load(&cc, sizeof(constant));
+	m_constant_buffer = GraphicsEngine::get()->getRenderSystem()->createConstantBuffer(&cc, sizeof(constant));
 }
 
 void AppWindow::onUpdate()
 {
 	InputSystem::get()->update();
-	GraphicsEngine::get()->getImmediateDeviceContext()->clearRenderTargetColor(this->m_swap_chain, 0, 0.3f, 0.4f, 1);
+
+	GraphicsEngine::get()->getRenderSystem()->getImmediateDeviceContext()->clearRenderTargetColor(this->m_swap_chain, 0, 0.3f, 0.4f, 1);
 
 	RECT rect = this->getClientWindowRect();
-	GraphicsEngine::get()->getImmediateDeviceContext()->setViewportSize(rect.right - rect.left, rect.bottom - rect.top);
+	GraphicsEngine::get()->getRenderSystem()->getImmediateDeviceContext()->setViewportSize(rect.right - rect.left, rect.bottom - rect.top);
 
 	update();
-	GraphicsEngine::get()->getImmediateDeviceContext()->setConstantBuffer(m_vertex_shader, m_constant_buffer);
-	GraphicsEngine::get()->getImmediateDeviceContext()->setConstantBuffer(m_pixel_shader, m_constant_buffer);
+	GraphicsEngine::get()->getRenderSystem()->getImmediateDeviceContext()->setConstantBuffer(m_vertex_shader, m_constant_buffer);
+	GraphicsEngine::get()->getRenderSystem()->getImmediateDeviceContext()->setConstantBuffer(m_pixel_shader, m_constant_buffer);
 
 	//Default shaders for Graphics pipeline
-	GraphicsEngine::get()->getImmediateDeviceContext()->setVertexShader(m_vertex_shader);
-	GraphicsEngine::get()->getImmediateDeviceContext()->setPixelShader(m_pixel_shader);
+	GraphicsEngine::get()->getRenderSystem()->getImmediateDeviceContext()->setVertexShader(m_vertex_shader);
+	GraphicsEngine::get()->getRenderSystem()->getImmediateDeviceContext()->setPixelShader(m_pixel_shader);
 
 	// Set vertices to draw
-	GraphicsEngine::get()->getImmediateDeviceContext()->setVertexBuffer(m_vertex_buffer);
+	GraphicsEngine::get()->getRenderSystem()->getImmediateDeviceContext()->setVertexBuffer(m_vertex_buffer);
 	// Set indices to draw
-	GraphicsEngine::get()->getImmediateDeviceContext()->setIndexBuffer(m_index_buffer);
+	GraphicsEngine::get()->getRenderSystem()->getImmediateDeviceContext()->setIndexBuffer(m_index_buffer);
 	//GraphicsEngine::get()->getImmediateDeviceContext()->drawTriangleStrip(m_vertex_buffer->getSizeVertexList(), 0);
-	GraphicsEngine::get()->getImmediateDeviceContext()->drawIndexedTriangleList(m_index_buffer->getSizeIndexList(),0, 0);
+	GraphicsEngine::get()->getRenderSystem()->getImmediateDeviceContext()->drawIndexedTriangleList(m_index_buffer->getSizeIndexList(),0, 0);
 	m_swap_chain->present(false);
 
 	m_old_delta = m_new_delta;
@@ -153,16 +145,7 @@ void AppWindow::onUpdate()
 void AppWindow::onDestroy()
 {
 	Window::onDestroy();
-	
-	m_vertex_buffer->release();
-	m_index_buffer->release();
-	m_constant_buffer->release();
-	m_swap_chain->release();
-	m_vertex_shader->release();
-	m_pixel_shader->release();
-	
-
-	GraphicsEngine::get()->release();
+		GraphicsEngine::get()->release();
 }
 
 void AppWindow::onFocus()
@@ -205,13 +188,11 @@ void AppWindow::onMouseMove(const Point& mouse_pos)
 {
 	int width = this->getClientWindowRect().right - this->getClientWindowRect().left;
 	int height = this->getClientWindowRect().bottom - this->getClientWindowRect().top;
-	width /= 2.0f;
-	height /= 2.0f;
 
-	m_rot_x += ( mouse_pos.y - height ) * m_delta_time * 0.1f;
-	m_rot_y += ( mouse_pos.x - width  ) * m_delta_time * 0.1f;
+	m_rot_x += ( mouse_pos.y - height / 2.0f) * m_delta_time * 0.1f;
+	m_rot_y += ( mouse_pos.x - width / 2.0f) * m_delta_time * 0.1f;
 
-	InputSystem::get()->setCursorPosition(Point(width, height));
+	InputSystem::get()->setCursorPosition( Point(int(width / 2.0f), int(height / 2.0f)) );
 }
 
 void AppWindow::onLeftMouseDown(const Point& delta_pos)
