@@ -47,6 +47,7 @@ void AppWindow::update()
 void AppWindow::onCreate()
 {
 	InputSystem::get()->addListener(this);
+	InputSystem::get()->showCursor(false);
 
 	GraphicsEngine::get()->init();
 	m_swap_chain = GraphicsEngine::get()->createSwapChain();
@@ -200,10 +201,17 @@ void AppWindow::onKeyUp(int key)
 	m_rightward = 0.0f;
 }
 
-void AppWindow::onMouseMove(const Point& mouse_delta)
+void AppWindow::onMouseMove(const Point& mouse_pos)
 {
-	m_rot_x += mouse_delta.m_y * m_delta_time * 0.1f;
-	m_rot_y += mouse_delta.m_x * m_delta_time * 0.1f;
+	int width = this->getClientWindowRect().right - this->getClientWindowRect().left;
+	int height = this->getClientWindowRect().bottom - this->getClientWindowRect().top;
+	width /= 2.0f;
+	height /= 2.0f;
+
+	m_rot_x += ( mouse_pos.y - height ) * m_delta_time * 0.1f;
+	m_rot_y += ( mouse_pos.x - width  ) * m_delta_time * 0.1f;
+
+	InputSystem::get()->setCursorPosition(Point(width, height));
 }
 
 void AppWindow::onLeftMouseDown(const Point& delta_pos)

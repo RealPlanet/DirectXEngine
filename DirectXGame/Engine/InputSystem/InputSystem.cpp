@@ -16,26 +16,36 @@ void InputSystem::removeListener(InputListener* listener)
     m_set_listeners.erase(listener);
 }
 
+void InputSystem::setCursorPosition(const Point& pos)
+{
+    SetCursorPos(pos.x, pos.y);
+}
+
+void InputSystem::showCursor(bool show)
+{
+    ShowCursor(show);
+}
+
 void InputSystem::update()
 {
-    POINT current_delta = {};
-    GetCursorPos(&current_delta);
+    POINT current_mouse_pos = {};
+    GetCursorPos(&current_mouse_pos);
 
     if (m_first_time)
     {
-        m_old_mouse_pos = Point(current_delta.x, current_delta.y);
+        m_old_mouse_pos = Point(current_mouse_pos.x, current_mouse_pos.y);
         m_first_time = false;
     }
 
-    if (current_delta.y != m_old_mouse_pos.m_y || current_delta.x != m_old_mouse_pos.m_x)
+    if (current_mouse_pos.y != m_old_mouse_pos.y || current_mouse_pos.x != m_old_mouse_pos.x)
     {
         auto iterator = m_set_listeners.begin();
         while (iterator != m_set_listeners.end())
         {
-            Point temp = Point(current_delta.x - m_old_mouse_pos.m_x, current_delta.y - m_old_mouse_pos.m_y);
+            Point temp = Point(current_mouse_pos.x, current_mouse_pos.y);
             (*iterator++)->onMouseMove(temp);
         }
-        m_old_mouse_pos = Point(current_delta.x, current_delta.y);
+        m_old_mouse_pos = Point(current_mouse_pos.x, current_mouse_pos.y);
     }
  
     unsigned char m_keys_state[256] = {};
@@ -50,11 +60,11 @@ void InputSystem::update()
                 {
                     if (i == VK_LBUTTON && m_keys_state[i] != m_old_keys_state[i])
                     {
-                        (*iterator++)->onLeftMouseDown(Point(current_delta.x, current_delta.y));
+                        (*iterator++)->onLeftMouseDown(Point(current_mouse_pos.x, current_mouse_pos.y));
                     }
                     else if (i == VK_RBUTTON && m_keys_state[i] != m_old_keys_state[i])
                     {
-                        (*iterator++)->onRightMouseDown(Point(current_delta.x, current_delta.y));
+                        (*iterator++)->onRightMouseDown(Point(current_mouse_pos.x, current_mouse_pos.y));
                     }
                     else
                     {
@@ -70,11 +80,11 @@ void InputSystem::update()
                     {
                         if (i == VK_LBUTTON)
                         {
-                            (*iterator++)->onLeftMouseDown(Point(current_delta.x, current_delta.y));
+                            (*iterator++)->onLeftMouseDown(Point(current_mouse_pos.x, current_mouse_pos.y));
                         }
                         else if (i == VK_RBUTTON)
                         {
-                            (*iterator++)->onRightMouseDown(Point(current_delta.x, current_delta.y));
+                            (*iterator++)->onRightMouseDown(Point(current_mouse_pos.x, current_mouse_pos.y));
                         }
                         else
                         {

@@ -19,11 +19,11 @@ public:
 	// Inherited via InputListener
 	virtual void onKeyDown(int key) override;
 	virtual void onKeyUp(int key) override;
-	virtual void onMouseMove(const Point& mouse_delta) override;
-	virtual void onLeftMouseDown(const Point& delta_pos) override;
-	virtual void onRightMouseDown(const Point& delta_pos) override;
-	virtual void onLeftMouseUp(const Point& delta_pos) override;
-	virtual void onRightMouseUp(const Point& delta_pos) override;
+	virtual void onMouseMove(const Point& mouse_pos) override;
+	virtual void onLeftMouseDown(const Point& mouse_pos) override;
+	virtual void onRightMouseDown(const Point& mouse_pos) override;
+	virtual void onLeftMouseUp(const Point& mouse_pos) override;
+	virtual void onRightMouseUp(const Point& mouse_pos) override;
 
 
 private:

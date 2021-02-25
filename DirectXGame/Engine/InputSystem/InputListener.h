@@ -11,9 +11,9 @@ public:
 
 	//Virtual interface for mouse
 
-	virtual void onMouseMove(const Point& delta_pos) = 0;
-	virtual void onLeftMouseDown(const Point& delta_pos) = 0;
-	virtual void onRightMouseDown(const Point& delta_pos) = 0;
-	virtual void onLeftMouseUp(const Point& delta_pos) = 0;
-	virtual void onRightMouseUp(const Point& delta_pos) = 0;
+	virtual void onMouseMove(const Point& mouse_pos) = 0;
+	virtual void onLeftMouseDown(const Point& mouse_pos) = 0;
+	virtual void onRightMouseDown(const Point& mouse_pos) = 0;
+	virtual void onLeftMouseUp(const Point& mouse_pos) = 0;
+	virtual void onRightMouseUp(const Point& mouse_pos) = 0;
 };
