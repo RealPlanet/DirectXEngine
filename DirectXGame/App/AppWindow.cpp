@@ -1,5 +1,6 @@
 #include "AppWindow.h"
 #include <Windows.h>
+#include <iostream>
 
 void AppWindow::update()
 {
@@ -46,50 +47,93 @@ void AppWindow::onCreate()
 	RECT rect = this->getClientWindowRect();
 	InputSystem::get()->addListener(this);
 	InputSystem::get()->showCursor(false);
+
+	m_wood_tex = GraphicsEngine::get()->getTextureManager()->createTextureFromFile(L"Assets\\Textures\\wood.jpg");
+
 	m_swap_chain = GraphicsEngine::get()->getRenderSystem()->createSwapChain(this->m_hwnd, rect.right - rect.left, rect.bottom - rect.top);
 	m_world_cam.setTranslation(Vector3D(0, 0, -2));
+
+	Vector3D position_list[] = 
+	{
+		{ Vector3D(-0.5f,-0.5f,-0.5f)},
+		{ Vector3D(-0.5f,0.5f,-0.5f) },
+		{ Vector3D(0.5f,0.5f,-0.5f) },
+		{ Vector3D(0.5f,-0.5f,-0.5f)},
+
+		//BACK FACE
+		{ Vector3D(0.5f,-0.5f,0.5f) },
+		{ Vector3D(0.5f,0.5f,0.5f) },
+		{ Vector3D(-0.5f,0.5f,0.5f)},
+		{ Vector3D(-0.5f,-0.5f,0.5f) }
+	};
+
+	Vector2D texcoord_list[] =
+	{
+		{ Vector2D(0.0f,0.0f) },
+		{ Vector2D(0.0f,1.0f) },
+		{ Vector2D(1.0f,0.0f) },
+		{ Vector2D(1.0f,1.0f) }
+	};
+
+	vertex vertex_list[] =
+	{
+		//X - Y - Z
+		//FRONT FACE
+		{ position_list[0],texcoord_list[1] },
+		{ position_list[1],texcoord_list[0] },
+		{ position_list[2],texcoord_list[2] },
+		{ position_list[3],texcoord_list[3] },
+
+
+		{ position_list[4],texcoord_list[1] },
+		{ position_list[5],texcoord_list[0] },
+		{ position_list[6],texcoord_list[2] },
+		{ position_list[7],texcoord_list[3] },
+
+
+		{ position_list[1],texcoord_list[1] },
+		{ position_list[6],texcoord_list[0] },
+		{ position_list[5],texcoord_list[2] },
+		{ position_list[2],texcoord_list[3] },
+
+		{ position_list[7],texcoord_list[1] },
+		{ position_list[0],texcoord_list[0] },
+		{ position_list[3],texcoord_list[2] },
+		{ position_list[4],texcoord_list[3] },
+
+		{ position_list[3],texcoord_list[1] },
+		{ position_list[2],texcoord_list[0] },
+		{ position_list[5],texcoord_list[2] },
+		{ position_list[4],texcoord_list[3] },
+
+		{ position_list[7],texcoord_list[1] },
+		{ position_list[6],texcoord_list[0] },
+		{ position_list[1],texcoord_list[2] },
+		{ position_list[0],texcoord_list[3] }
+	};
 	// Test cube
-	vertex list[] = {
-		// X - Y - Z
-		// Front face of the cube
-		{Vector3D(-0.5f, -0.5f, -0.5f),			Vector3D(1, 1, 1)			,	Vector3D(0, 0, 0)},		//Position 0
-		{Vector3D(-0.5f, 0.5f, -0.5f),			Vector3D(0, 0, 0)			,	Vector3D(0, 0, 0)},		//Position 1
-		{Vector3D(0.5f, 0.5f, -0.5f),			Vector3D(1, 0, 0)			,	Vector3D(0, 0, 0)},		//Position 2
-		{Vector3D(0.5f, -0.5f, -0.5f),			Vector3D(0, 1, 0)			,	Vector3D(0, 0, 0)},		//Position 3
-
-		// Back face of the cube
-		{Vector3D(0.5f, -0.5f, 0.5f),			Vector3D(0, 0, 1)			,	Vector3D(0, 0, 0)},		//Position 4
-		{Vector3D(0.5f, 0.5f, 0.5f),			Vector3D(0.5f, 0.5f, 0.5f)	,	Vector3D(0, 0, 0)},		//Position 5
-		{Vector3D(-0.5f, 0.5f, 0.5f),			Vector3D(1, 1, 0)			,	Vector3D(0, 0, 0)},		//Position 6
-		{Vector3D(-0.5f, -0.5f, 0.5f),			Vector3D(1, 0, 1)			,	Vector3D(0, 0, 0)}		//Position 7
+	unsigned int index_list[] =
+	{
+		//FRONT SIDE
+		0,1,2,  //FIRST TRIANGLE
+		2,3,0,  //SECOND TRIANGLE
+		//BACK SIDE
+		4,5,6,
+		6,7,4,
+		//TOP SIDE
+		8,9,10,
+		10,11,8,
+		//BOTTOM SIDE
+		12,13,14,
+		14,15,12,
+		//RIGHT SIDE
+		16,17,18,
+		18,19,16,
+		//LEFT SIDE
+		20,21,22,
+		22,23,20
 	};
-	unsigned int index_list[] = {
-		// Front face of cube
-		0, 1, 2, // First triangle
-		2, 3, 0, // Second triangle
-
-		// Back face
-		4, 5, 6,
-		6, 7, 4,
-
-		// Top face
-		1, 6, 5,
-		5, 2, 1,
-
-		// Bottom face
-
-		7, 0, 3,
-		3, 4, 7,
-
-		// Right side
-		3, 2, 5,
-		5, 4, 3,
-
-		//Left side
-		7, 6, 1,
-		1, 0, 7
-	};
-	UINT list_size = ARRAYSIZE(list);
+	UINT list_size = ARRAYSIZE(vertex_list);
 	UINT index_size = ARRAYSIZE(index_list);
 	m_index_buffer = GraphicsEngine::get()->getRenderSystem()->createIndexBuffer(index_list, index_size);
 
@@ -98,7 +142,7 @@ void AppWindow::onCreate()
 
 	GraphicsEngine::get()->getRenderSystem()->compileVertexShader(L"Shaders\\VertexShader.hlsl", "main", &shader_bytecode, &shader_size);
 	m_vertex_shader = GraphicsEngine::get()->getRenderSystem()->createVertexShader(shader_bytecode, shader_size);
-	m_vertex_buffer = GraphicsEngine::get()->getRenderSystem()->createVertexBuffer(list, sizeof(vertex), list_size, shader_bytecode, (UINT)shader_size);
+	m_vertex_buffer = GraphicsEngine::get()->getRenderSystem()->createVertexBuffer(vertex_list, sizeof(vertex), list_size, shader_bytecode, (UINT)shader_size);
 
 	GraphicsEngine::get()->getRenderSystem()->releaseCompiledShader();
 
@@ -127,6 +171,8 @@ void AppWindow::onUpdate()
 	//Default shaders for Graphics pipeline
 	GraphicsEngine::get()->getRenderSystem()->getImmediateDeviceContext()->setVertexShader(m_vertex_shader);
 	GraphicsEngine::get()->getRenderSystem()->getImmediateDeviceContext()->setPixelShader(m_pixel_shader);
+
+	GraphicsEngine::get()->getRenderSystem()->getImmediateDeviceContext()->setTexture(m_pixel_shader, m_wood_tex);
 
 	// Set vertices to draw
 	GraphicsEngine::get()->getRenderSystem()->getImmediateDeviceContext()->setVertexBuffer(m_vertex_buffer);

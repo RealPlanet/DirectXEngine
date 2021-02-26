@@ -11,18 +11,20 @@ GraphicsEngine::GraphicsEngine()
 		m_render_system = new RenderSystem();
 	}
 	catch (...) { throw std::exception("Failed to create RenderSystem"); }
+
+	try
+	{
+		m_tex_manager = new TextureManager(); //This depends on RenderSystem so goes after
+	}
+	catch (...) { throw std::exception("Failed to create RenderSystem"); }
 }
 
 // Release all of the resources used by the graphics engine
 GraphicsEngine::~GraphicsEngine()
 {
 	GraphicsEngine::m_engine = nullptr;
+	delete m_tex_manager;
 	delete m_render_system;
-}
-
-GraphicsEngine* GraphicsEngine::get()
-{
-	return m_engine;
 }
 
 void GraphicsEngine::create()
@@ -41,4 +43,14 @@ void GraphicsEngine::release()
 RenderSystem* GraphicsEngine::getRenderSystem()
 {
 	return m_render_system;
+}
+
+GraphicsEngine* GraphicsEngine::get()
+{
+	return m_engine;
+}
+
+TextureManager* GraphicsEngine::getTextureManager()
+{
+	return m_tex_manager;
 }

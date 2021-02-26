@@ -1,11 +1,12 @@
+#include "Vector2D.h"
 #include "Vector3D.h"
+#include "Vector4D.h"
 #include "Matrix4x4.h"
 
 struct vertex
 {
 	Vector3D position;
-	Vector3D color;
-	Vector3D color1;
+	Vector2D texcoord;
 };
 
 __declspec(align(16))
