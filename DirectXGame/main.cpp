@@ -1,18 +1,36 @@
 #include <iostream>
 #include "AppWindow.h"
+#include "InputSystem.h"
 
+void ReleaseResources();
 
 int main()
 {
-	AppWindow application;
-	if (application.init())
+	try
 	{
-		//If window init successful do game loop
-		while (application.isRunning())
-		{
-			application.broadcast();
-		}
+		GraphicsEngine::create();
+		InputSystem::create();
+	}
+	catch (...) { return -1; }
+
+	try
+	{
+		AppWindow application;
+		while (application.isRunning()); //isRunning automatically broadcasts events to the application
+	}
+	catch (...)
+	{
+		ReleaseResources();
+		return -1;
 	}
 
+	ReleaseResources();
+
 	return 0;
+}
+
+void ReleaseResources()
+{
+	GraphicsEngine::release();
+	InputSystem::release();
 }

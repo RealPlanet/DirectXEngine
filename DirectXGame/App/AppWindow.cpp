@@ -46,7 +46,6 @@ void AppWindow::onCreate()
 	RECT rect = this->getClientWindowRect();
 	InputSystem::get()->addListener(this);
 	InputSystem::get()->showCursor(false);
-	GraphicsEngine::get()->init();
 	m_swap_chain = GraphicsEngine::get()->getRenderSystem()->createSwapChain(this->m_hwnd, rect.right - rect.left, rect.bottom - rect.top);
 	m_world_cam.setTranslation(Vector3D(0, 0, -2));
 	// Test cube
@@ -145,7 +144,6 @@ void AppWindow::onUpdate()
 void AppWindow::onDestroy()
 {
 	Window::onDestroy();
-		GraphicsEngine::get()->release();
 }
 
 void AppWindow::onFocus()

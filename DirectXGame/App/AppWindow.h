@@ -37,13 +37,13 @@ public:
 
 
 private:
-	SwapChain* m_swap_chain = nullptr;
-	VertexBuffer* m_vertex_buffer = nullptr;
-	IndexBuffer* m_index_buffer = nullptr;
-	ConstantBuffer* m_constant_buffer = nullptr;
+	SwapChainPtr m_swap_chain = nullptr;
+	VertexBufferPtr m_vertex_buffer = nullptr;
+	IndexBufferPtr m_index_buffer = nullptr;
+	ConstantBufferPtr m_constant_buffer = nullptr;
 
-	VertexShader* m_vertex_shader = nullptr;
-	PixelShader* m_pixel_shader = nullptr;
+	VertexShaderPtr m_vertex_shader = nullptr;
+	PixelShaderPtr m_pixel_shader = nullptr;
 
 	//Time elapsed between previous and current frame
 	DWORD m_old_delta = 0;

@@ -1,9 +1,31 @@
 #include "InputSystem.h"
 
+InputSystem* InputSystem::m_system = nullptr;
+
+InputSystem::InputSystem()
+{
+}
+
+InputSystem::~InputSystem()
+{
+    InputSystem::m_system = nullptr;
+}
+
+void InputSystem::create()
+{
+    if (InputSystem::m_system) throw std::exception("InputSystem already created");
+    InputSystem::m_system = new InputSystem();
+}
+
+void InputSystem::release()
+{
+    if (!InputSystem::m_system) return;
+    delete InputSystem::m_system;
+}
+
 InputSystem* InputSystem::get()
 {
-    static InputSystem system;
-    return &system;
+    return m_system;
 }
 
 void InputSystem::addListener(InputListener* listener)
@@ -96,4 +118,5 @@ void InputSystem::update()
         }
         memcpy(m_old_keys_state, m_keys_state, sizeof(unsigned char) * 256);
     }
+
 }

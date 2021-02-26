@@ -1,5 +1,5 @@
 #include "Window.h"
-
+#include <exception>
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
@@ -8,10 +8,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 		case WM_CREATE:
 		{
 			//Event fired on window creation
-			Window* window = (Window*)((LPCREATESTRUCT)lparam)->lpCreateParams;
-			SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)window);
-			window->setHWND(hwnd);
-			window->onCreate();
 			break;
 		}
 
@@ -19,7 +15,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 		{
 			//Event fired on window enter focus
 			Window* window = (Window*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
-			window->onFocus();
+			if(window) window->onFocus();
 			break;
 		}
 
@@ -50,7 +46,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 	return NULL;
 }
 
-bool Window::init()
+Window::Window()
 {
 	WNDCLASSEX wc;
 	wc.cbClsExtra = NULL;
@@ -66,18 +62,18 @@ bool Window::init()
 	wc.style = NULL;
 	wc.lpfnWndProc = &WndProc;
 
-	if (!RegisterClassEx(&wc)) //If the registration of the window fails returns false
+	if (!RegisterClassEx(&wc)) //If the registration of the window fails
 	{
-		return false;
+		throw std::exception("Could not register new window");
 	}
 
 	m_hwnd = CreateWindowEx(WS_EX_OVERLAPPEDWINDOW, L"MyWindowClass", L"DirectX Application",
-							WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, 1024, 768, NULL, NULL, NULL, this);
+							WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, 1024, 768, NULL, NULL, NULL, NULL);
 
 	if (!m_hwnd)
 	{
 		//If window creation fails return false
-		return false;
+		throw std::exception("Failed to create Window");
 	}
 
 	//Show window on screen
@@ -85,38 +81,41 @@ bool Window::init()
 	UpdateWindow(m_hwnd);
 
 	m_isRunning = true; //Flag which indicates if the game is running
-	return true;
+}
+
+Window::~Window()
+{
+
 }
 
 bool Window::broadcast()
 {
+	if (!this->m_isInit)
+	{
+		SetWindowLongPtr(m_hwnd, GWLP_USERDATA, (LONG_PTR)this);
+		this->onCreate();
+
+		this->m_isInit = true;
+	}
+
 	MSG message;
 	this->onUpdate();
 
-	while ( PeekMessage(&message, NULL, 0, 0, PM_REMOVE) > 0 )
+	while (PeekMessage(&message, NULL, 0, 0, PM_REMOVE) > 0)
 	{
 		TranslateMessage(&message);
 		DispatchMessage(&message);
 	}
 
-	
+
 	Sleep(1);
-
-	return true;
-}
-
-bool Window::release()
-{
-	if (!DestroyWindow(m_hwnd))
-	{
-		return false;
-	}
 
 	return true;
 }
 
 bool Window::isRunning()
 {
+	if(m_isRunning) broadcast();
 	return m_isRunning;
 }
 
@@ -127,13 +126,7 @@ RECT Window::getClientWindowRect()
 	return rect;
 }
 
-void Window::setHWND(HWND hwnd)
-{
-	this->m_hwnd = hwnd;
-}
-
 void Window::onDestroy()
 {
 	m_isRunning = false;
-	//this->release();
 }
