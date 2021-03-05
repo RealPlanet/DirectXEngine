@@ -52,10 +52,10 @@ void Matrix4x4::inverse()
 		}
 		v.cross(vec[0], vec[1], vec[2]);
 
-		out.matrix[0][i] = pow(-1.0f, i) * v.x / det;
-		out.matrix[1][i] = pow(-1.0f, i) * v.y / det;
-		out.matrix[2][i] = pow(-1.0f, i) * v.z / det;
-		out.matrix[3][i] = pow(-1.0f, i) * v.w / det;
+		out.matrix[0][i] = float( pow(-1.0f, i) * v.x / det );
+		out.matrix[1][i] = float( pow(-1.0f, i) * v.y / det );
+		out.matrix[2][i] = float( pow(-1.0f, i) * v.z / det );
+		out.matrix[3][i] = float( pow(-1.0f, i) * v.w / det );
 	}
 
 	this->setMatrix(out);
@@ -106,7 +106,7 @@ void Matrix4x4::setScale(const Vector3D& scale)
 
 void Matrix4x4::setPerspectiveFovLH(float fov, float aspect, float zNear, float zFar)
 {
-	float yScale = 1.0f / tan(fov / 2.0f);
+	float yScale = float(1.0f / tan(fov / 2.0f));
 	float xScale = yScale / aspect;
 
 	matrix[0][0] = xScale;

@@ -11,6 +11,7 @@ Texture::Texture(const wchar_t* full_path) : Resource(full_path)
 	{
 		res = DirectX::CreateTexture(GraphicsEngine::get()->getRenderSystem()->m_d3d_device, image_data.GetImages(),
 										image_data.GetImageCount(), image_data.GetMetadata(), &m_texture);
+
 		D3D11_SHADER_RESOURCE_VIEW_DESC desc = {};
 		desc.Format = image_data.GetMetadata().format;
 		desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;

@@ -1,6 +1,12 @@
 #include "AppWindow.h"
+#include "Mesh.h"
 #include <Windows.h>
 #include <iostream>
+
+/*
+* TODO ::
+*  - Updated GetTickCount to GetTickCount64
+*/
 
 void AppWindow::update()
 {
@@ -49,6 +55,7 @@ void AppWindow::onCreate()
 	InputSystem::get()->showCursor(false);
 
 	m_wood_tex = GraphicsEngine::get()->getTextureManager()->createTextureFromFile(L"Assets\\Textures\\wood.jpg");
+	m_mesh = GraphicsEngine::get()->getMeshManager()->createMeshFromFile(L"Assets\\Meshes\\teapot.obj");
 
 	m_swap_chain = GraphicsEngine::get()->getRenderSystem()->createSwapChain(this->m_hwnd, rect.right - rect.left, rect.bottom - rect.top);
 	m_world_cam.setTranslation(Vector3D(0, 0, -2));
@@ -133,6 +140,7 @@ void AppWindow::onCreate()
 		20,21,22,
 		22,23,20
 	};
+
 	UINT list_size = ARRAYSIZE(vertex_list);
 	UINT index_size = ARRAYSIZE(index_list);
 	m_index_buffer = GraphicsEngine::get()->getRenderSystem()->createIndexBuffer(index_list, index_size);
@@ -143,7 +151,6 @@ void AppWindow::onCreate()
 	GraphicsEngine::get()->getRenderSystem()->compileVertexShader(L"Shaders\\VertexShader.hlsl", "main", &shader_bytecode, &shader_size);
 	m_vertex_shader = GraphicsEngine::get()->getRenderSystem()->createVertexShader(shader_bytecode, shader_size);
 	m_vertex_buffer = GraphicsEngine::get()->getRenderSystem()->createVertexBuffer(vertex_list, sizeof(vertex), list_size, shader_bytecode, (UINT)shader_size);
-
 	GraphicsEngine::get()->getRenderSystem()->releaseCompiledShader();
 
 	GraphicsEngine::get()->getRenderSystem()->compilePixelShader(L"Shaders\\PixelShader.hlsl", "main", &shader_bytecode, &shader_size);
@@ -153,6 +160,7 @@ void AppWindow::onCreate()
 	constant cc;
 	cc.m_time = 0;
 	m_constant_buffer = GraphicsEngine::get()->getRenderSystem()->createConstantBuffer(&cc, sizeof(constant));
+
 }
 
 void AppWindow::onUpdate()
@@ -175,12 +183,10 @@ void AppWindow::onUpdate()
 	GraphicsEngine::get()->getRenderSystem()->getImmediateDeviceContext()->setTexture(m_pixel_shader, m_wood_tex);
 
 	// Set vertices to draw
-	GraphicsEngine::get()->getRenderSystem()->getImmediateDeviceContext()->setVertexBuffer(m_vertex_buffer);
+	GraphicsEngine::get()->getRenderSystem()->getImmediateDeviceContext()->setVertexBuffer(m_mesh->getVertexBuffer());
 	// Set indices to draw
-	GraphicsEngine::get()->getRenderSystem()->getImmediateDeviceContext()->setIndexBuffer(m_index_buffer);
-	//GraphicsEngine::get()->getImmediateDeviceContext()->drawTriangleStrip(m_vertex_buffer->getSizeVertexList(), 0);
-	GraphicsEngine::get()->getRenderSystem()->getImmediateDeviceContext()->drawIndexedTriangleList(m_index_buffer->getSizeIndexList(),0, 0);
-	m_swap_chain->present(false);
+	GraphicsEngine::get()->getRenderSystem()->getImmediateDeviceContext()->setIndexBuffer(m_mesh->getIndexBuffer());
+	GraphicsEngine::get()->getRenderSystem()->getImmediateDeviceContext()->drawIndexedTriangleList(m_mesh->getIndexBuffer()->getSizeIndexList(), 0, 0);	m_swap_chain->present(false);
 
 	m_old_delta = m_new_delta;
 	m_new_delta = GetTickCount();

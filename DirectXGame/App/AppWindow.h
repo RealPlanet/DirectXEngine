@@ -45,6 +45,7 @@ private:
 	VertexShaderPtr m_vertex_shader = nullptr;
 	PixelShaderPtr m_pixel_shader = nullptr;
 	TexturePtr m_wood_tex = nullptr;
+	MeshPtr m_mesh = nullptr;
 
 	//Time elapsed between previous and current frame
 	DWORD m_old_delta = 0;

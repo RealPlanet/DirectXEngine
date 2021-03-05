@@ -1,5 +1,6 @@
 #include "ResourceManager.h"
 #include <filesystem>
+#include <iostream>
 
 ResourceManager::ResourceManager()
 {
@@ -26,6 +27,7 @@ ResourcePtr ResourceManager::createResourceFromFile(const wchar_t* file_path)
         m_map_resources[fullPath] = res;
         return res;
     }
+    
 
     return nullptr;
 }
