@@ -39,6 +39,7 @@ Mesh::Mesh(const wchar_t* full_path) : Resource(full_path)
 	for (size_t s = 0; s < shapes.size(); s++)
 	{
 		size_t index_offset = 0;
+
 		//Reserve memory for whole mesh instead of gradually incrementing it
 		list_verticies.reserve(shapes[s].mesh.indices.size());
 		list_indicies.reserve(shapes[s].mesh.indices.size());
@@ -59,10 +60,16 @@ Mesh::Mesh(const wchar_t* full_path) : Resource(full_path)
 				tinyobj::real_t tx = attribs.texcoords[index.texcoord_index * 2 + 0];
 				tinyobj::real_t ty = attribs.texcoords[index.texcoord_index * 2 + 1];
 
+				//Normals
+				tinyobj::real_t nx = attribs.normals[index.normal_index * 3 + 0];
+				tinyobj::real_t ny = attribs.normals[index.normal_index * 3 + 1];
+				tinyobj::real_t nz = attribs.normals[index.normal_index * 3 + 2];
+
 				Vector3D vert_pos = Vector3D(vx, vy, vz);
 				Vector2D texcoord = Vector2D(tx, ty);
+				Vector3D normals = Vector3D(nx, ny, nz);
 
-				VertexMesh vertex{ vert_pos, texcoord };
+				VertexMesh vertex( vert_pos, texcoord, normals );
 				list_verticies.push_back(vertex);
 				list_indicies.push_back((unsigned int)index_offset + v);
 
@@ -70,6 +77,7 @@ Mesh::Mesh(const wchar_t* full_path) : Resource(full_path)
 			index_offset += num_face_verts;
 		}
 	}
+
 	void* shader_bytecode = nullptr;
 	size_t shader_size = 0;
 	GraphicsEngine::get()->getVertexMeshLayoutByteCodeAndSize(&shader_bytecode, &shader_size);

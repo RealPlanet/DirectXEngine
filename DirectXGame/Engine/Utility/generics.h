@@ -16,5 +16,7 @@ struct constant
 	Matrix4x4 m_view = {};
 	Matrix4x4 m_projection = {};
 
-	unsigned int m_time = 0;
+	//unsigned int m_time = 0;
+	Vector4D m_light_direction;
+	Vector4D m_camera_position;
 };

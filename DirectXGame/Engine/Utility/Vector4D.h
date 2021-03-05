@@ -1,4 +1,5 @@
 #pragma once
+#include "Vector3D.h"
 
 class Vector4D
 {
@@ -6,6 +7,8 @@ public:
 	float x, y, z, w;
 	Vector4D() : x{ 0 }, y{ 0 }, z{ 0 }, w{ 0 }{}
 	Vector4D(float _x, float _y, float _z, float _w) : x{ _x }, y{ _y }, z{ _z }, w{ _w }{}
+	Vector4D(const Vector3D& vector) : x{ vector.x }, y{ vector.y }, z{ vector.z }, w{ 1.0 }{}
+	Vector4D(const Vector4D& vector) : x{ vector.x }, y{ vector.y }, z{ vector.z }, w{ vector.w }{}
 	inline void cross(Vector4D& v1, Vector4D& v2, Vector4D& v3);
 };
 

@@ -13,8 +13,16 @@ void AppWindow::update()
 	constant cc;
 	Matrix4x4 world_cam;
 	Matrix4x4 temp;
+	Matrix4x4 m_light_rot_matrix;
+	m_light_rot_matrix.setIdentity();
+	
+	m_light_rot_y += 0.707f * m_delta_time;
 
-	cc.m_time = ::GetTickCount();
+	m_light_rot_matrix.setRotationY(m_light_rot_y);
+	cc.m_light_direction = m_light_rot_matrix.getZDirection();
+
+
+	//cc.m_time = GetTickCount();
 	m_delta_pos += m_delta_time / 10.0f;
 	if (m_delta_pos > 1.0f)
 		m_delta_pos = 0;
@@ -31,10 +39,11 @@ void AppWindow::update()
 	temp.setRotationY(m_rot_y);
 	world_cam *= temp;
 
-	Vector3D newPos = m_world_cam.getTranslation() + m_world_cam.getZDirection() * (m_forward * 0.3f);
-	newPos = newPos + m_world_cam.getXDirection() * (m_rightward * 0.3f);
+	Vector3D newPos = m_world_cam.getTranslation() + m_world_cam.getZDirection() * (m_forward * 0.01f);
+	newPos = newPos + m_world_cam.getXDirection() * (m_rightward * 0.01f);
 
 	world_cam.setTranslation(newPos);
+	cc.m_camera_position = newPos;
 	m_world_cam = world_cam;
 	world_cam.inverse();
 	cc.m_world = world_cam;
@@ -55,10 +64,10 @@ void AppWindow::onCreate()
 	InputSystem::get()->showCursor(false);
 
 	m_wood_tex = GraphicsEngine::get()->getTextureManager()->createTextureFromFile(L"Assets\\Textures\\wood.jpg");
-	m_mesh = GraphicsEngine::get()->getMeshManager()->createMeshFromFile(L"Assets\\Meshes\\teapot.obj");
+	m_mesh = GraphicsEngine::get()->getMeshManager()->createMeshFromFile(L"Assets\\Meshes\\statue.obj");
 
 	m_swap_chain = GraphicsEngine::get()->getRenderSystem()->createSwapChain(this->m_hwnd, rect.right - rect.left, rect.bottom - rect.top);
-	m_world_cam.setTranslation(Vector3D(0, 0, -2));
+	m_world_cam.setTranslation(Vector3D(0, 0, -1));
 
 	Vector3D position_list[] = 
 	{
@@ -158,9 +167,8 @@ void AppWindow::onCreate()
 	GraphicsEngine::get()->getRenderSystem()->releaseCompiledShader();
 
 	constant cc;
-	cc.m_time = 0;
+	//cc.m_time = 0;
 	m_constant_buffer = GraphicsEngine::get()->getRenderSystem()->createConstantBuffer(&cc, sizeof(constant));
-
 }
 
 void AppWindow::onUpdate()

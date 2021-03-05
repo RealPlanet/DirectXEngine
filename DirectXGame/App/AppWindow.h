@@ -59,6 +59,8 @@ private:
 	float m_rot_y = 0;
 	float m_scale_cube = 1;
 
+	float m_light_rot_y = 0.0f;
+
 	float m_forward = 0.0f;
 	float m_rightward = 0.0f;
 
