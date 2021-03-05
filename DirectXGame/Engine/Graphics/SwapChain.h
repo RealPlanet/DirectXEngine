@@ -11,6 +11,7 @@ public:
 private:
 	IDXGISwapChain* m_swap_chain = nullptr;
 	ID3D11RenderTargetView* m_render_target_view = nullptr;
+	ID3D11DepthStencilView* m_depth_stencil_view = nullptr;
 	RenderSystem* m_system = nullptr;
 
 	friend class DeviceContext;
