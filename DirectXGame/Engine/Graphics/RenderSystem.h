@@ -22,8 +22,11 @@ public:
 	bool compilePixelShader(const wchar_t* file_name, const char* entry_point_name, void** shader_byte_code, size_t* byte_code_size);
 
 	void releaseCompiledShader();
+	void setRasterizerState(bool cull_front);
 
 private:
+	void initRasterizerState();
+
 	D3D_FEATURE_LEVEL m_feature_level = {};
 	ID3D11Device* m_d3d_device = nullptr;
 	ID3D11DeviceContext* m_imm_context = nullptr;
@@ -38,6 +41,10 @@ private:
 
 	ID3D11VertexShader* m_vs = nullptr;
 	ID3D11PixelShader* m_ps = nullptr;
+
+	//States used for back or front culling on triagles
+	ID3D11RasterizerState* m_cull_front_state = nullptr;
+	ID3D11RasterizerState* m_cull_back_state = nullptr;
 
 	friend class SwapChain;
 	friend class VertexBuffer;
