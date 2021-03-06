@@ -22,6 +22,8 @@ cbuffer constant: register(b0)
 	//unsigned int m_time;
 	float4 m_light_direction;
 	float4 m_camera_position;
+
+	unsigned int m_time;
 };
 
 VS_OUTPUT main(VS_INPUT input)

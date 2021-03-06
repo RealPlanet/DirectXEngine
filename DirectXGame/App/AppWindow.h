@@ -3,7 +3,6 @@
 #include "Matrix4x4.h"
 #include "RenderSystem.h"
 #include "InputListener.h"
-#include "generics.h"
 #include "InputSystem.h"
 #include "ConstantBuffer.h"
 #include "GraphicsEngine.h"

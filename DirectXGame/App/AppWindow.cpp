@@ -22,7 +22,7 @@ void AppWindow::update()
 	cc.m_light_direction = m_light_rot_matrix.getZDirection();
 
 
-	//cc.m_time = GetTickCount();
+	cc.m_time = GetTickCount();
 	m_delta_pos += m_delta_time / 10.0f;
 	if (m_delta_pos > 1.0f)
 		m_delta_pos = 0;
@@ -167,7 +167,7 @@ void AppWindow::onCreate()
 	GraphicsEngine::get()->getRenderSystem()->releaseCompiledShader();
 
 	constant cc;
-	//cc.m_time = 0;
+	cc.m_time = 0;
 	m_constant_buffer = GraphicsEngine::get()->getRenderSystem()->createConstantBuffer(&cc, sizeof(constant));
 }
 
