@@ -16,6 +16,13 @@
 class AppWindow : public Window, public InputListener
 {
 public:
+	
+
+	void drawMesh(const MeshPtr& mesh, const VertexShaderPtr& vs, const PixelShaderPtr& ps, const ConstantBufferPtr& cb, const TexturePtr& tex);
+	void updateCamera();
+	void updateModel();
+	void updateSkybox();
+
 	void update();
 
 	// Inherited via Window
@@ -40,11 +47,16 @@ private:
 	VertexBufferPtr m_vertex_buffer = nullptr;
 	IndexBufferPtr m_index_buffer = nullptr;
 	ConstantBufferPtr m_constant_buffer = nullptr;
+	ConstantBufferPtr m_constant_buffer_skybox = nullptr;
 
 	VertexShaderPtr m_vertex_shader = nullptr;
 	PixelShaderPtr m_pixel_shader = nullptr;
+	PixelShaderPtr m_pixel_shader_skybox = nullptr;
+
 	TexturePtr m_wood_tex = nullptr;
+	TexturePtr m_sky_tex = nullptr;
 	MeshPtr m_mesh = nullptr;
+	MeshPtr m_sky_mesh = nullptr;
 
 	//Time elapsed between previous and current frame
 	DWORD m_old_delta = 0;
@@ -64,5 +76,7 @@ private:
 	float m_rightward = 0.0f;
 
 	Matrix4x4 m_world_cam;
+	Matrix4x4 m_view_cam;
+	Matrix4x4 m_proj_cam;
 };
 
