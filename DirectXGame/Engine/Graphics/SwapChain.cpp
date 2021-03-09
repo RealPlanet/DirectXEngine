@@ -19,6 +19,7 @@ SwapChain::SwapChain(RenderSystem* system, HWND hwnd, UINT width, UINT height)
 	chain_description.SampleDesc.Count = 1;
 	chain_description.SampleDesc.Quality = 0;
 	chain_description.Windowed = true;
+	chain_description.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
 	HRESULT result = m_system->m_dxgi_factory->CreateSwapChain(device, &chain_description, &m_swap_chain);
 
@@ -27,8 +28,41 @@ SwapChain::SwapChain(RenderSystem* system, HWND hwnd, UINT width, UINT height)
 		throw std::exception("SwapChain not created successfully");
 	}
 
+	reloadBuffers(width, height);
+}
+
+SwapChain::~SwapChain()
+{
+	m_swap_chain->Release();
+}
+
+bool SwapChain::present(bool vsynch)
+{
+	m_swap_chain->Present(vsynch, NULL);
+	return true;
+}
+
+
+void SwapChain::setFullScreen(bool fullscreen, unsigned int width, unsigned int height)
+{
+	resize(width, height);
+	m_swap_chain->SetFullscreenState(fullscreen, nullptr);
+}
+
+void SwapChain::resize(unsigned int width, unsigned int height)
+{
+	if(m_render_target_view) m_render_target_view->Release();
+	if(m_depth_stencil_view) m_depth_stencil_view->Release();
+
+	m_swap_chain->ResizeBuffers(1, width, height, DXGI_FORMAT_R8G8B8A8_UNORM, 0);
+	reloadBuffers(width, height);
+}
+
+void SwapChain::reloadBuffers(unsigned int width, unsigned int height)
+{
+	ID3D11Device* device = m_system->m_d3d_device;
 	ID3D11Texture2D* buffer = nullptr;
-	result = m_swap_chain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&buffer);
+	HRESULT result = m_swap_chain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&buffer);
 
 	if (FAILED(result))
 	{
@@ -36,6 +70,7 @@ SwapChain::SwapChain(RenderSystem* system, HWND hwnd, UINT width, UINT height)
 	}
 
 	result = device->CreateRenderTargetView(buffer, NULL, &m_render_target_view);
+
 	buffer->Release();
 
 	if (FAILED(result))
@@ -70,15 +105,4 @@ SwapChain::SwapChain(RenderSystem* system, HWND hwnd, UINT width, UINT height)
 	{
 		throw std::exception("Could not create a Depth/Stencil buffer for SwapChain");
 	}
-}
-
-SwapChain::~SwapChain()
-{
-	m_swap_chain->Release();
-}
-
-bool SwapChain::present(bool vsynch)
-{
-	m_swap_chain->Present(vsynch, NULL);
-	return true;
 }

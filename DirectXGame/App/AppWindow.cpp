@@ -84,6 +84,35 @@ void AppWindow::updateSkybox()
 	m_constant_buffer_skybox->update(GraphicsEngine::get()->getRenderSystem()->getImmediateDeviceContext(), &cc);
 }
 
+void AppWindow::render()
+{
+	GraphicsEngine::get()->getRenderSystem()->getImmediateDeviceContext()->clearRenderTargetColor(this->m_swap_chain, 0, 0.3f, 0.4f, 1);
+
+	RECT rect = this->getClientWindowRect();
+	GraphicsEngine::get()->getRenderSystem()->getImmediateDeviceContext()->setViewportSize(rect.right - rect.left, rect.bottom - rect.top);
+
+	update();
+	GraphicsEngine::get()->getRenderSystem()->setRasterizerState(false);
+
+	TexturePtr list_tex[4];
+	list_tex[0] = m_earth_c_tex;
+	list_tex[1] = m_earth_s_tex;
+	list_tex[2] = m_clouds_tex;
+	list_tex[3] = m_earth_night_c_tex;
+	drawMesh(m_mesh, m_vertex_shader, m_pixel_shader, m_constant_buffer, list_tex, 4);
+
+	GraphicsEngine::get()->getRenderSystem()->setRasterizerState(true);
+	list_tex[0] = m_sky_tex;
+	drawMesh(m_sky_mesh, m_vertex_shader, m_pixel_shader_skybox, m_constant_buffer_skybox, list_tex, 1);
+
+	m_swap_chain->present(false);
+
+	m_old_delta = m_new_delta;
+	m_new_delta = GetTickCount();
+	m_delta_time = m_old_delta ? (m_new_delta - m_old_delta) / 1000.0f : 0;
+	m_time += m_delta_time;
+}
+
 void AppWindow::update()
 {
 	updateCamera();
@@ -96,6 +125,7 @@ void AppWindow::onCreate()
 	RECT rect = this->getClientWindowRect();
 	InputSystem::get()->addListener(this);
 	InputSystem::get()->showCursor(false);
+	m_play_state = true;
 
 	m_earth_c_tex = GraphicsEngine::get()->getTextureManager()->createTextureFromFile(L"Assets\\Textures\\Earth\\earth_color.jpg");
 	m_earth_night_c_tex = GraphicsEngine::get()->getTextureManager()->createTextureFromFile(L"Assets\\Textures\\Earth\\earth_night.jpg");
@@ -106,7 +136,7 @@ void AppWindow::onCreate()
 	m_mesh = GraphicsEngine::get()->getMeshManager()->createMeshFromFile(L"Assets\\Meshes\\sphere_hq.obj");
 	m_sky_mesh = GraphicsEngine::get()->getMeshManager()->createMeshFromFile(L"Assets\\Meshes\\sphere.obj");
 	m_swap_chain = GraphicsEngine::get()->getRenderSystem()->createSwapChain(this->m_hwnd, rect.right - rect.left, rect.bottom - rect.top);
-	m_world_cam.setTranslation(Vector3D(0, 0, -1));
+	m_world_cam.setTranslation(Vector3D(0, 0, -3));
 
 	Vector3D position_list[] = 
 	{
@@ -219,37 +249,13 @@ void AppWindow::onCreate()
 void AppWindow::onUpdate()
 {
 	InputSystem::get()->update();
-
-	GraphicsEngine::get()->getRenderSystem()->getImmediateDeviceContext()->clearRenderTargetColor(this->m_swap_chain, 0, 0.3f, 0.4f, 1);
-
-	RECT rect = this->getClientWindowRect();
-	GraphicsEngine::get()->getRenderSystem()->getImmediateDeviceContext()->setViewportSize(rect.right - rect.left, rect.bottom - rect.top);
-
-	update();
-	GraphicsEngine::get()->getRenderSystem()->setRasterizerState(false);
-
-	TexturePtr list_tex[4];
-	list_tex[0] = m_earth_c_tex;
-	list_tex[1] = m_earth_s_tex;
-	list_tex[2] = m_clouds_tex;
-	list_tex[3] = m_earth_night_c_tex;
-	drawMesh(m_mesh, m_vertex_shader, m_pixel_shader, m_constant_buffer, list_tex, 4);
-
-	GraphicsEngine::get()->getRenderSystem()->setRasterizerState(true);
-	list_tex[0] = m_sky_tex;
-	drawMesh(m_sky_mesh, m_vertex_shader, m_pixel_shader_skybox, m_constant_buffer_skybox, list_tex, 1);
-
-	m_swap_chain->present(false);
-
-	m_old_delta = m_new_delta;
-	m_new_delta = GetTickCount();
-	m_delta_time = m_old_delta ? (m_new_delta - m_old_delta) / 1000.0f : 0;
-	m_time += m_delta_time;
+	this->render();
 }
 
 void AppWindow::onDestroy()
 {
 	Window::onDestroy();
+	m_swap_chain->setFullScreen(false, 1, 1);
 }
 
 void AppWindow::onFocus()
@@ -260,6 +266,13 @@ void AppWindow::onFocus()
 void AppWindow::onKillFocus()
 {
 	InputSystem::get()->removeListener(this);
+}
+
+void AppWindow::onSize()
+{
+	RECT rect = this->getClientWindowRect();
+	m_swap_chain->resize(rect.right, rect.bottom);
+	this->render();
 }
 
 void AppWindow::onKeyDown(int key)
@@ -286,10 +299,24 @@ void AppWindow::onKeyUp(int key)
 {
 	m_forward = 0.0f;
 	m_rightward = 0.0f;
+
+	if (key == VK_ESCAPE)
+	{
+		m_play_state = !m_play_state;
+		InputSystem::get()->showCursor(!m_play_state);
+	}
+	else if (key == 'F')
+	{
+		m_fullscreen = !m_fullscreen;
+		RECT rc = getScreenSize();
+		m_swap_chain->setFullScreen(m_fullscreen, rc.right, rc.bottom);
+	}
 }
 
 void AppWindow::onMouseMove(const Point& mouse_pos)
 {
+	if(!m_play_state) return;
+
 	int width = this->getClientWindowRect().right - this->getClientWindowRect().left;
 	int height = this->getClientWindowRect().bottom - this->getClientWindowRect().top;
 

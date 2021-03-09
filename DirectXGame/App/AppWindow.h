@@ -24,6 +24,7 @@ public:
 	void updateModel();
 	void updateSkybox();
 
+	void render();
 	void update();
 
 	// Inherited via Window
@@ -32,6 +33,7 @@ public:
 	virtual void onDestroy() override;
 	virtual void onFocus() override;
 	virtual void onKillFocus() override;
+	virtual void onSize() override;
 
 	// Inherited via InputListener
 	virtual void onKeyDown(int key) override;
@@ -83,5 +85,8 @@ private:
 	Matrix4x4 m_world_cam;
 	Matrix4x4 m_view_cam;
 	Matrix4x4 m_proj_cam;
+
+	bool m_play_state = false;
+	bool m_fullscreen = false;
 };
 

@@ -27,6 +27,25 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 			break;
 		}
 
+		case WM_SIZE:
+		{
+			Window* window = (Window*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
+			if (window) window->onSize();
+			break;
+		}
+
+		case WM_GETMINMAXINFO:
+		{
+
+			// Event fired when the window is resized and stops at the width / height specified below
+			// Min supported resolution is 800*600 (When window is too small kernel exception is thrown)
+			LPMINMAXINFO minmax = (LPMINMAXINFO)lparam;
+			minmax->ptMinTrackSize.x = 800;
+			minmax->ptMinTrackSize.y = 600;
+			break;
+
+		}
+
 		case WM_DESTROY:
 		{
 			//Event fired when window needs to be destroyed
@@ -87,6 +106,11 @@ Window::~Window()
 {
 }
 
+void Window::onDestroy()
+{
+	m_isRunning = false;
+}
+
 bool Window::broadcast()
 {
 	if (!this->m_isInit)
@@ -125,7 +149,10 @@ RECT Window::getClientWindowRect()
 	return rect;
 }
 
-void Window::onDestroy()
+RECT Window::getScreenSize()
 {
-	m_isRunning = false;
+	RECT rc;
+	rc.right = GetSystemMetrics(SM_CXSCREEN);
+	rc.bottom = GetSystemMetrics(SM_CYSCREEN);
+	return rc;
 }
