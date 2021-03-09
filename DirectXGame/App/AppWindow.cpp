@@ -125,7 +125,6 @@ void AppWindow::onCreate()
 	RECT rect = this->getClientWindowRect();
 	InputSystem::get()->addListener(this);
 	InputSystem::get()->showCursor(false);
-	m_play_state = true;
 
 	m_earth_c_tex = GraphicsEngine::get()->getTextureManager()->createTextureFromFile(L"Assets\\Textures\\Earth\\earth_color.jpg");
 	m_earth_night_c_tex = GraphicsEngine::get()->getTextureManager()->createTextureFromFile(L"Assets\\Textures\\Earth\\earth_night.jpg");

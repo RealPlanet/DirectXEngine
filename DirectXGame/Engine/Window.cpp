@@ -11,22 +11,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 			break;
 		}
 
-		case WM_SETFOCUS:
-		{
-			//Event fired on window enter focus
-			Window* window = (Window*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
-			if(window) window->onFocus();
-			break;
-		}
-
-		case WM_KILLFOCUS:
-		{
-			//Event fired on window exit focus
-			Window* window = (Window*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
-			window->onKillFocus();
-			break;
-		}
-
 		case WM_SIZE:
 		{
 			Window* window = (Window*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
@@ -44,6 +28,22 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 			minmax->ptMinTrackSize.y = 600;
 			break;
 
+		}
+
+		case WM_SETFOCUS:
+		{
+			//Event fired on window enter focus
+			Window* window = (Window*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
+			if(window) window->onFocus();
+			break;
+		}
+
+		case WM_KILLFOCUS:
+		{
+			//Event fired on window exit focus
+			Window* window = (Window*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
+			window->onKillFocus();
+			break;
 		}
 
 		case WM_DESTROY:
