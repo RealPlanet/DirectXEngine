@@ -85,7 +85,6 @@ Window::Window()
 
 Window::~Window()
 {
-
 }
 
 bool Window::broadcast()

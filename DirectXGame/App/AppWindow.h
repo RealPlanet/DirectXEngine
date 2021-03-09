@@ -18,7 +18,8 @@ class AppWindow : public Window, public InputListener
 public:
 	
 
-	void drawMesh(const MeshPtr& mesh, const VertexShaderPtr& vs, const PixelShaderPtr& ps, const ConstantBufferPtr& cb, const TexturePtr& tex);
+	void drawMesh(const MeshPtr& mesh, const VertexShaderPtr& vs, const PixelShaderPtr& ps, const ConstantBufferPtr& cb,
+		const TexturePtr* texture, unsigned int num_textures);
 	void updateCamera();
 	void updateModel();
 	void updateSkybox();
@@ -53,8 +54,11 @@ private:
 	PixelShaderPtr m_pixel_shader = nullptr;
 	PixelShaderPtr m_pixel_shader_skybox = nullptr;
 
-	TexturePtr m_wood_tex = nullptr;
+	TexturePtr m_earth_c_tex = nullptr;
+	TexturePtr m_earth_s_tex = nullptr;
+	TexturePtr m_earth_night_c_tex = nullptr;
 	TexturePtr m_sky_tex = nullptr;
+	TexturePtr m_clouds_tex = nullptr;
 	MeshPtr m_mesh = nullptr;
 	MeshPtr m_sky_mesh = nullptr;
 
@@ -62,6 +66,7 @@ private:
 	DWORD m_old_delta = 0;
 	DWORD m_new_delta = 0;
 	float m_delta_time = 0;
+	float m_time = 0;
 
 	float m_delta_pos = 0;
 	float m_delta_scale = 0;

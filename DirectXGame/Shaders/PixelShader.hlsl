@@ -1,5 +1,14 @@
-Texture2D Texture: register(t0);
-sampler TextureSampler: register(s0);
+Texture2D EarthColor: register(t0);
+sampler EarthColorSampler: register(s0);
+
+Texture2D EarthSpecular: register(t1);
+sampler EarthSpecularSampler: register(s1);
+
+Texture2D CloudColor: register(t2);
+sampler CloudSampler: register(s2);
+
+Texture2D NightColor: register(t3);
+sampler NightSampler: register(s4);
 
 struct PS_INPUT
 {
@@ -18,26 +27,41 @@ cbuffer constant: register(b0)
 	float4 m_light_direction;
 	float4 m_camera_position;
 
-	unsigned int m_time;
+	float m_time;
 };
 
 float4 main(PS_INPUT input) : SV_TARGET
 {
+	float4 earth_color = EarthColor.Sample(EarthColorSampler, 1.0 - input.texcoord);
+	float earth_spec = EarthSpecular.Sample(EarthColorSampler, 1.0 - input.texcoord).r;
+	float clouds = CloudColor.Sample(CloudSampler, 1.0 - input.texcoord + float2(m_time/100.0, 0)).r;
+
+	float4 earth_night_color = NightColor.Sample(NightSampler, 1.0 - input.texcoord);
 //AMBIENT LIGHT CALC
-	float ka = 0.1;
-	float3 ia = float3(1.0, 1.0, 1.0);
+	float ka = 1.5;
+	float3 ia = float3(0.09, 0.082, 0.082);
+	ia *= earth_color.rgb;
+
 	float3 ambient_light = ka * ia;
 //END
 
 //DIFFUSE LIGHT CALC
 	float kd = 0.7; 
-	float3 id = float3(1.0, 1.0, 1.0);
-	float amount_diffuse_light = max(0.0, dot(m_light_direction.xyz, input.normal));
-	float3 diffuse_light = kd * amount_diffuse_light * id;
+	float3 id_day = float3(1.0, 1.0, 1.0);
+	id_day *= ( earth_color.rgb + clouds );
+
+	float3 id_night = float3(1.0, 1.0, 1.0);
+	id_night *= ( earth_night_color.rgb + clouds * 0.3);
+	float amount_diffuse_light = dot(m_light_direction.xyz, input.normal);
+
+	float3 id = lerp(id_night, id_day, (amount_diffuse_light + 1.0) / 2.0);
+
+	
+	float3 diffuse_light = kd * id;
 //END
 
 //SPECULAR LIGHT CALC
-	float ks = 1.0;
+	float ks = earth_spec;
 	float3 is = float3(1.0, 1.0, 1.0);
 	float3 reflected_light = reflect(m_light_direction.xyz, input.normal);
 

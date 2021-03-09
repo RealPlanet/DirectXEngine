@@ -8,7 +8,8 @@
 *  - Updated GetTickCount to GetTickCount64
 */
 
-void AppWindow::drawMesh(const MeshPtr& mesh, const VertexShaderPtr& vs, const PixelShaderPtr& ps, const ConstantBufferPtr& cb, const TexturePtr& tex)
+void AppWindow::drawMesh(const MeshPtr& mesh, const VertexShaderPtr& vs, const PixelShaderPtr& ps, const ConstantBufferPtr& cb,
+						const TexturePtr* texture, unsigned int num_textures)
 {
 	GraphicsEngine::get()->getRenderSystem()->getImmediateDeviceContext()->setConstantBuffer(vs, cb);
 	GraphicsEngine::get()->getRenderSystem()->getImmediateDeviceContext()->setConstantBuffer(ps, cb);
@@ -17,7 +18,7 @@ void AppWindow::drawMesh(const MeshPtr& mesh, const VertexShaderPtr& vs, const P
 	GraphicsEngine::get()->getRenderSystem()->getImmediateDeviceContext()->setVertexShader(vs);
 	GraphicsEngine::get()->getRenderSystem()->getImmediateDeviceContext()->setPixelShader(ps);
 
-	GraphicsEngine::get()->getRenderSystem()->getImmediateDeviceContext()->setTexture(ps, tex);
+	GraphicsEngine::get()->getRenderSystem()->getImmediateDeviceContext()->setTexture(ps, texture, num_textures);
 
 	// Set vertices to draw
 	GraphicsEngine::get()->getRenderSystem()->getImmediateDeviceContext()->setVertexBuffer(mesh->getVertexBuffer());
@@ -59,7 +60,7 @@ void AppWindow::updateModel()
 	Matrix4x4 m_light_rot_matrix;
 	m_light_rot_matrix.setIdentity();
 	m_light_rot_matrix.setRotationY(m_light_rot_y);
-	m_light_rot_y += 0.707f * m_delta_time;
+	m_light_rot_y += 0.307f * m_delta_time;
 	
 	//cc.m_world = m_world_cam;
 	cc.m_world.setIdentity();
@@ -67,7 +68,7 @@ void AppWindow::updateModel()
 	cc.m_projection = m_proj_cam;
 	cc.m_camera_position = m_world_cam.getTranslation();
 	cc.m_light_direction = m_light_rot_matrix.getZDirection();
-	cc.m_time = GetTickCount();
+	cc.m_time = m_time; //GetTickCount();
 
 	m_constant_buffer->update(GraphicsEngine::get()->getRenderSystem()->getImmediateDeviceContext(), &cc);
 }
@@ -96,10 +97,13 @@ void AppWindow::onCreate()
 	InputSystem::get()->addListener(this);
 	InputSystem::get()->showCursor(false);
 
-	m_wood_tex = GraphicsEngine::get()->getTextureManager()->createTextureFromFile(L"Assets\\Textures\\wood.jpg");
-	m_sky_tex = GraphicsEngine::get()->getTextureManager()->createTextureFromFile(L"Assets\\Textures\\sky.jpg");
+	m_earth_c_tex = GraphicsEngine::get()->getTextureManager()->createTextureFromFile(L"Assets\\Textures\\Earth\\earth_color.jpg");
+	m_earth_night_c_tex = GraphicsEngine::get()->getTextureManager()->createTextureFromFile(L"Assets\\Textures\\Earth\\earth_night.jpg");
+	m_earth_s_tex = GraphicsEngine::get()->getTextureManager()->createTextureFromFile(L"Assets\\Textures\\Earth\\earth_spec.jpg");
+	m_clouds_tex = GraphicsEngine::get()->getTextureManager()->createTextureFromFile(L"Assets\\Textures\\Earth\\clouds.jpg");
+	m_sky_tex = GraphicsEngine::get()->getTextureManager()->createTextureFromFile(L"Assets\\Textures\\skyboxes\\stars_map.jpg");
 
-	m_mesh = GraphicsEngine::get()->getMeshManager()->createMeshFromFile(L"Assets\\Meshes\\suzanne.obj");
+	m_mesh = GraphicsEngine::get()->getMeshManager()->createMeshFromFile(L"Assets\\Meshes\\sphere_hq.obj");
 	m_sky_mesh = GraphicsEngine::get()->getMeshManager()->createMeshFromFile(L"Assets\\Meshes\\sphere.obj");
 	m_swap_chain = GraphicsEngine::get()->getRenderSystem()->createSwapChain(this->m_hwnd, rect.right - rect.left, rect.bottom - rect.top);
 	m_world_cam.setTranslation(Vector3D(0, 0, -1));
@@ -223,16 +227,24 @@ void AppWindow::onUpdate()
 
 	update();
 	GraphicsEngine::get()->getRenderSystem()->setRasterizerState(false);
-	drawMesh(m_mesh, m_vertex_shader, m_pixel_shader, m_constant_buffer, m_wood_tex);
+
+	TexturePtr list_tex[4];
+	list_tex[0] = m_earth_c_tex;
+	list_tex[1] = m_earth_s_tex;
+	list_tex[2] = m_clouds_tex;
+	list_tex[3] = m_earth_night_c_tex;
+	drawMesh(m_mesh, m_vertex_shader, m_pixel_shader, m_constant_buffer, list_tex, 4);
 
 	GraphicsEngine::get()->getRenderSystem()->setRasterizerState(true);
-	drawMesh(m_sky_mesh, m_vertex_shader, m_pixel_shader_skybox, m_constant_buffer_skybox, m_sky_tex);
+	list_tex[0] = m_sky_tex;
+	drawMesh(m_sky_mesh, m_vertex_shader, m_pixel_shader_skybox, m_constant_buffer_skybox, list_tex, 1);
 
 	m_swap_chain->present(false);
 
 	m_old_delta = m_new_delta;
 	m_new_delta = GetTickCount();
 	m_delta_time = m_old_delta ? (m_new_delta - m_old_delta) / 1000.0f : 0;
+	m_time += m_delta_time;
 }
 
 void AppWindow::onDestroy()

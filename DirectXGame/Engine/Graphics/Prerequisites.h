@@ -53,6 +53,6 @@ struct constant
 	Vector4D m_light_direction;
 	Vector4D m_camera_position;
 
-	unsigned int m_time = 0;
+	float m_time = 0;
 };
 

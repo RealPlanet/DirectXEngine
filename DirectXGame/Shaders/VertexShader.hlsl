@@ -23,7 +23,7 @@ cbuffer constant: register(b0)
 	float4 m_light_direction;
 	float4 m_camera_position;
 
-	unsigned int m_time;
+	float m_time;
 };
 
 VS_OUTPUT main(VS_INPUT input)

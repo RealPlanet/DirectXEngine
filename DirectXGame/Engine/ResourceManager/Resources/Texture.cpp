@@ -18,8 +18,20 @@ Texture::Texture(const wchar_t* full_path) : Resource(full_path)
 		desc.Texture2D.MipLevels = (UINT)image_data.GetMetadata().mipLevels;
 		desc.Texture2D.MostDetailedMip = 0;
 
-		GraphicsEngine::get()->getRenderSystem()->m_d3d_device->CreateShaderResourceView(m_texture, &desc,
+		D3D11_SAMPLER_DESC sampler_desc = {};
+		sampler_desc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+		sampler_desc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+		sampler_desc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+		sampler_desc.Filter = D3D11_FILTER_ANISOTROPIC;
+		sampler_desc.MinLOD = 0;
+		sampler_desc.MaxLOD = (UINT)image_data.GetMetadata().mipLevels;
+
+		//Create state so texture wraps around instead of clamping
+		res = GraphicsEngine::get()->getRenderSystem()->m_d3d_device->CreateSamplerState(&sampler_desc, &m_sampler_state);
+		if (FAILED(res)) throw std::exception("SamplerState exception!");
+		res = GraphicsEngine::get()->getRenderSystem()->m_d3d_device->CreateShaderResourceView(m_texture, &desc,
 			&m_shader_res_view);
+		if (FAILED(res)) throw std::exception("CreateShaderResourceView exception!");
 	}
 	else
 	{
