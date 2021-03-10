@@ -56,6 +56,7 @@ private:
 	PixelShaderPtr m_pixel_shader = nullptr;
 	PixelShaderPtr m_pixel_shader_skybox = nullptr;
 
+	TexturePtr m_wall_tex = nullptr;
 	TexturePtr m_earth_c_tex = nullptr;
 	TexturePtr m_earth_s_tex = nullptr;
 	TexturePtr m_earth_night_c_tex = nullptr;

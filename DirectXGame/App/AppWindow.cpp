@@ -60,13 +60,17 @@ void AppWindow::updateModel()
 	Matrix4x4 m_light_rot_matrix;
 	m_light_rot_matrix.setIdentity();
 	m_light_rot_matrix.setRotationY(m_light_rot_y);
-	m_light_rot_y += 0.307f * m_delta_time;
+	m_light_rot_y += 1.57f * m_delta_time;
 	
 	//cc.m_world = m_world_cam;
 	cc.m_world.setIdentity();
 	cc.m_view = m_view_cam;
 	cc.m_projection = m_proj_cam;
 	cc.m_camera_position = m_world_cam.getTranslation();
+
+	float dist_from_origin = 1.0f;
+	cc.m_light_position = Vector4D(cos(m_light_rot_y) * dist_from_origin, 1.0f, sin(m_light_rot_y) * dist_from_origin, 1.0f);
+
 	cc.m_light_direction = m_light_rot_matrix.getZDirection();
 	cc.m_time = m_time; //GetTickCount();
 
@@ -94,12 +98,9 @@ void AppWindow::render()
 	update();
 	GraphicsEngine::get()->getRenderSystem()->setRasterizerState(false);
 
-	TexturePtr list_tex[4];
-	list_tex[0] = m_earth_c_tex;
-	list_tex[1] = m_earth_s_tex;
-	list_tex[2] = m_clouds_tex;
-	list_tex[3] = m_earth_night_c_tex;
-	drawMesh(m_mesh, m_vertex_shader, m_pixel_shader, m_constant_buffer, list_tex, 4);
+	TexturePtr list_tex[1];
+	list_tex[0] = m_wall_tex;
+	drawMesh(m_mesh, m_vertex_shader, m_pixel_shader, m_constant_buffer, list_tex, 1);
 
 	GraphicsEngine::get()->getRenderSystem()->setRasterizerState(true);
 	list_tex[0] = m_sky_tex;
@@ -125,14 +126,16 @@ void AppWindow::onCreate()
 	RECT rect = this->getClientWindowRect();
 	InputSystem::get()->addListener(this);
 	InputSystem::get()->showCursor(false);
+	m_play_state = true;
 
-	m_earth_c_tex = GraphicsEngine::get()->getTextureManager()->createTextureFromFile(L"Assets\\Textures\\Earth\\earth_color.jpg");
-	m_earth_night_c_tex = GraphicsEngine::get()->getTextureManager()->createTextureFromFile(L"Assets\\Textures\\Earth\\earth_night.jpg");
-	m_earth_s_tex = GraphicsEngine::get()->getTextureManager()->createTextureFromFile(L"Assets\\Textures\\Earth\\earth_spec.jpg");
-	m_clouds_tex = GraphicsEngine::get()->getTextureManager()->createTextureFromFile(L"Assets\\Textures\\Earth\\clouds.jpg");
+	m_wall_tex = GraphicsEngine::get()->getTextureManager()->createTextureFromFile(L"Assets\\Textures\\_other\\wall.jpg");
+	//m_earth_c_tex = GraphicsEngine::get()->getTextureManager()->createTextureFromFile(L"Assets\\Textures\\Earth\\earth_color.jpg");
+	//m_earth_night_c_tex = GraphicsEngine::get()->getTextureManager()->createTextureFromFile(L"Assets\\Textures\\Earth\\earth_night.jpg");
+	//m_earth_s_tex = GraphicsEngine::get()->getTextureManager()->createTextureFromFile(L"Assets\\Textures\\Earth\\earth_spec.jpg");
+	//m_clouds_tex = GraphicsEngine::get()->getTextureManager()->createTextureFromFile(L"Assets\\Textures\\Earth\\clouds.jpg");
 	m_sky_tex = GraphicsEngine::get()->getTextureManager()->createTextureFromFile(L"Assets\\Textures\\skyboxes\\stars_map.jpg");
 
-	m_mesh = GraphicsEngine::get()->getMeshManager()->createMeshFromFile(L"Assets\\Meshes\\sphere_hq.obj");
+	m_mesh = GraphicsEngine::get()->getMeshManager()->createMeshFromFile(L"Assets\\Meshes\\scene.obj");
 	m_sky_mesh = GraphicsEngine::get()->getMeshManager()->createMeshFromFile(L"Assets\\Meshes\\sphere.obj");
 	m_swap_chain = GraphicsEngine::get()->getRenderSystem()->createSwapChain(this->m_hwnd, rect.right - rect.left, rect.bottom - rect.top);
 	m_world_cam.setTranslation(Vector3D(0, 0, -3));
@@ -225,12 +228,12 @@ void AppWindow::onCreate()
 	void* shader_bytecode = nullptr;
 	size_t shader_size = 0;
 
-	GraphicsEngine::get()->getRenderSystem()->compileVertexShader(L"Shaders\\VertexShader.hlsl", "main", &shader_bytecode, &shader_size);
+	GraphicsEngine::get()->getRenderSystem()->compileVertexShader(L"Shaders\\PointLightVertexShader.hlsl", "main", &shader_bytecode, &shader_size);
 	m_vertex_shader = GraphicsEngine::get()->getRenderSystem()->createVertexShader(shader_bytecode, shader_size);
 	m_vertex_buffer = GraphicsEngine::get()->getRenderSystem()->createVertexBuffer(vertex_list, sizeof(vertex), list_size, shader_bytecode, (UINT)shader_size);
 	GraphicsEngine::get()->getRenderSystem()->releaseCompiledShader();
 
-	GraphicsEngine::get()->getRenderSystem()->compilePixelShader(L"Shaders\\PixelShader.hlsl", "main", &shader_bytecode, &shader_size);
+	GraphicsEngine::get()->getRenderSystem()->compilePixelShader(L"Shaders\\PointLightPixelShader.hlsl", "main", &shader_bytecode, &shader_size);
 	m_pixel_shader = GraphicsEngine::get()->getRenderSystem()->createPixelShader(shader_bytecode, shader_size);
 	GraphicsEngine::get()->getRenderSystem()->releaseCompiledShader();
 
