@@ -1,18 +1,18 @@
 #pragma once
-#include "Vector3D.h"
+#include "Vector3.h"
 
-class Vector4D
+class Vector4
 {
 public:
 	float x, y, z, w;
-	Vector4D() : x{ 0 }, y{ 0 }, z{ 0 }, w{ 0 }{}
-	Vector4D(float _x, float _y, float _z, float _w) : x{ _x }, y{ _y }, z{ _z }, w{ _w }{}
-	Vector4D(const Vector3D& vector) : x{ vector.x }, y{ vector.y }, z{ vector.z }, w{ 1.0 }{}
-	Vector4D(const Vector4D& vector) : x{ vector.x }, y{ vector.y }, z{ vector.z }, w{ vector.w }{}
-	inline void cross(Vector4D& v1, Vector4D& v2, Vector4D& v3);
+	Vector4() : x{ 0 }, y{ 0 }, z{ 0 }, w{ 0 }{}
+	Vector4(float _x, float _y, float _z, float _w) : x{ _x }, y{ _y }, z{ _z }, w{ _w }{}
+	Vector4(const Vector3& vector) : x{ vector.x }, y{ vector.y }, z{ vector.z }, w{ 1.0 }{}
+	Vector4(const Vector4& vector) : x{ vector.x }, y{ vector.y }, z{ vector.z }, w{ vector.w }{}
+	inline void cross(Vector4& v1, Vector4& v2, Vector4& v3);
 };
 
-void Vector4D::cross(Vector4D& v1, Vector4D& v2, Vector4D& v3)
+void Vector4::cross(Vector4& v1, Vector4& v2, Vector4& v3)
 {
 	this->x = v1.y * (v2.z * v3.w - v3.z * v2.w) - v1.z * (v2.y * v3.w - v3.y * v2.w) + v1.w * (v2.y * v3.z - v2.z * v3.y);
 	this->y = -(v1.x * (v2.z * v3.w - v3.z * v2.w) - v1.z * (v2.x * v3.w - v3.x * v2.w) + v1.w * (v2.x * v3.z - v3.x * v2.z));

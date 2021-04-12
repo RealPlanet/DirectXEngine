@@ -1,6 +1,6 @@
 #include "Matrix4x4.h"
-#include "Vector3D.h"
-#include "Vector4D.h"
+#include "Vector3.h"
+#include "Vector4.h"
 
 void Matrix4x4::setIdentity()
 {
@@ -13,12 +13,12 @@ void Matrix4x4::setIdentity()
 
 float Matrix4x4::getDeterminant()
 {
-	Vector4D minor, v1, v2, v3;
+	Vector4 minor, v1, v2, v3;
 	float det;
 
-	v1 = Vector4D(this->matrix[0][0], this->matrix[1][0], this->matrix[2][0], this->matrix[3][0]);
-	v2 = Vector4D(this->matrix[0][1], this->matrix[1][1], this->matrix[2][1], this->matrix[3][1]);
-	v3 = Vector4D(this->matrix[0][2], this->matrix[1][2], this->matrix[2][2], this->matrix[3][2]);
+	v1 = Vector4(this->matrix[0][0], this->matrix[1][0], this->matrix[2][0], this->matrix[3][0]);
+	v2 = Vector4(this->matrix[0][1], this->matrix[1][1], this->matrix[2][1], this->matrix[3][1]);
+	v3 = Vector4(this->matrix[0][2], this->matrix[1][2], this->matrix[2][2], this->matrix[3][2]);
 
 
 	minor.cross(v1, v2, v3);
@@ -31,7 +31,7 @@ void Matrix4x4::inverse()
 {
 	int a, i, j;
 	Matrix4x4 out;
-	Vector4D v, vec[3];
+	Vector4 v, vec[3];
 	float det = 0.0f;
 
 	det = this->getDeterminant();
@@ -90,14 +90,14 @@ void Matrix4x4::setRotationZ(float z)
 	matrix[1][1] = (float)cos(z);
 }
 
-void Matrix4x4::setTranslation(const Vector3D& translation)
+void Matrix4x4::setTranslation(const Vector3& translation)
 {
 	matrix[3][0] = translation.x;
 	matrix[3][1] = translation.y;
 	matrix[3][2] = translation.z;
 }
 
-void Matrix4x4::setScale(const Vector3D& scale)
+void Matrix4x4::setScale(const Vector3& scale)
 {
 	matrix[0][0] = scale.x;
 	matrix[1][1] = scale.y;
@@ -125,18 +125,18 @@ void Matrix4x4::setOrthoLH(float width, float height, float near_plane, float fa
 	matrix[3][2] = -(near_plane / (far_plane - near_plane));
 }
 
-Vector3D Matrix4x4::getZDirection()
+Vector3 Matrix4x4::getZDirection()
 {
-	return Vector3D(matrix[2][0], matrix[2][1], matrix[2][2]);
+	return Vector3(matrix[2][0], matrix[2][1], matrix[2][2]);
 }
 
-Vector3D Matrix4x4::getXDirection()
+Vector3 Matrix4x4::getXDirection()
 {
-	return Vector3D(matrix[0][0], matrix[0][1], matrix[0][2]);
+	return Vector3(matrix[0][0], matrix[0][1], matrix[0][2]);
 }
 
-Vector3D Matrix4x4::getTranslation()
+Vector3 Matrix4x4::getTranslation()
 {
-	return Vector3D(matrix[3][0], matrix[3][1], matrix[3][2]);
+	return Vector3(matrix[3][0], matrix[3][1], matrix[3][2]);
 }
 

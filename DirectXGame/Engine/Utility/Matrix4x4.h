@@ -1,14 +1,14 @@
 #pragma once
 #include <memory>
 
-class Vector3D;
-class Vector4D;
+class Vector3;
+class Vector4;
 class Matrix4x4
 {
 public:
 	void setIdentity();
-	void setTranslation(const Vector3D& translation);
-	void setScale(const Vector3D& scale);
+	void setTranslation(const Vector3& translation);
+	void setScale(const Vector3& scale);
 	void setPerspectiveFovLH(float fov, float aspect, float zNear, float zFar);
 	void setOrthoLH(float width, float height, float near_plane, float far_plane);
 	void setRotationX(float x);
@@ -16,9 +16,9 @@ public:
 	void setRotationZ(float z);
 	float getDeterminant();
 	void setMatrix(const Matrix4x4& matrix);
-	Vector3D getZDirection();
-	Vector3D getXDirection();
-	Vector3D getTranslation();
+	Vector3 getZDirection();
+	Vector3 getXDirection();
+	Vector3 getTranslation();
 	void inverse();
 
 	void operator*=(Matrix4x4 other)

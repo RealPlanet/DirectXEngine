@@ -1,18 +1,18 @@
 #pragma once
-#include "Vector3D.h"
-#include "Vector2D.h"
+#include "Vector3.h"
+#include "Vector2.h"
 
 class VertexMesh
 {
 public:
-	Vector3D m_position;
-	Vector2D m_texcoord;
-	Vector3D m_normals;
+	Vector3 m_position;
+	Vector2 m_texcoord;
+	Vector3 m_normals;
 
 	VertexMesh() : m_position{}, m_texcoord{}, m_normals{}
 	{}
 
-	VertexMesh(Vector3D pos, Vector2D coord, Vector3D normals) : m_position(pos), m_texcoord(coord), m_normals{normals}
+	VertexMesh(Vector3 pos, Vector2 coord, Vector3 normals) : m_position(pos), m_texcoord(coord), m_normals{normals}
 	{}
 
 	VertexMesh(const VertexMesh& vm) : m_position(vm.m_position), m_texcoord(vm.m_texcoord), m_normals{vm.m_normals}

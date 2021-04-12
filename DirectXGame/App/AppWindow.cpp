@@ -40,7 +40,7 @@ void AppWindow::updateCamera()
 	temp.setRotationY(m_rot_y);
 	world_cam *= temp;
 
-	Vector3D newPos = m_world_cam.getTranslation() + m_world_cam.getZDirection() * (m_forward * 0.01f);
+	Vector3 newPos = m_world_cam.getTranslation() + m_world_cam.getZDirection() * (m_forward * 0.01f);
 	newPos = newPos + m_world_cam.getXDirection() * (m_rightward * 0.01f);
 	world_cam.setTranslation(newPos);
 	m_world_cam = world_cam;
@@ -69,7 +69,7 @@ void AppWindow::updateModel()
 	cc.m_camera_position = m_world_cam.getTranslation();
 
 	float dist_from_origin = 1.0f;
-	cc.m_light_position = Vector4D(cos(m_light_rot_y) * dist_from_origin, 1.0f, sin(m_light_rot_y) * dist_from_origin, 1.0f);
+	cc.m_light_position = Vector4(cos(m_light_rot_y) * dist_from_origin, 1.0f, sin(m_light_rot_y) * dist_from_origin, 1.0f);
 
 	cc.m_light_direction = m_light_rot_matrix.getZDirection();
 	cc.m_time = m_time; //GetTickCount();
@@ -81,7 +81,7 @@ void AppWindow::updateSkybox()
 {
 	constant cc;
 	cc.m_world.setIdentity();
-	cc.m_world.setScale(Vector3D(100.0f, 100.0f, 100.0f)); // Same values as zFar value of camera
+	cc.m_world.setScale(Vector3(100.0f, 100.0f, 100.0f)); // Same values as zFar value of camera
 	cc.m_world.setTranslation(m_world_cam.getTranslation());
 	cc.m_view = m_view_cam;
 	cc.m_projection = m_proj_cam;
@@ -138,28 +138,28 @@ void AppWindow::onCreate()
 	m_mesh = GraphicsEngine::get()->getMeshManager()->createMeshFromFile(L"Assets\\Meshes\\scene.obj");
 	m_sky_mesh = GraphicsEngine::get()->getMeshManager()->createMeshFromFile(L"Assets\\Meshes\\sphere.obj");
 	m_swap_chain = GraphicsEngine::get()->getRenderSystem()->createSwapChain(this->m_hwnd, rect.right - rect.left, rect.bottom - rect.top);
-	m_world_cam.setTranslation(Vector3D(0, 0, -3));
+	m_world_cam.setTranslation(Vector3(0, 0, -3));
 
-	Vector3D position_list[] = 
+	Vector3 position_list[] = 
 	{
-		{ Vector3D(-0.5f,-0.5f,-0.5f)},
-		{ Vector3D(-0.5f,0.5f,-0.5f) },
-		{ Vector3D(0.5f,0.5f,-0.5f) },
-		{ Vector3D(0.5f,-0.5f,-0.5f)},
+		{ Vector3(-0.5f,-0.5f,-0.5f)},
+		{ Vector3(-0.5f,0.5f,-0.5f) },
+		{ Vector3(0.5f,0.5f,-0.5f) },
+		{ Vector3(0.5f,-0.5f,-0.5f)},
 
 		//BACK FACE
-		{ Vector3D(0.5f,-0.5f,0.5f) },
-		{ Vector3D(0.5f,0.5f,0.5f) },
-		{ Vector3D(-0.5f,0.5f,0.5f)},
-		{ Vector3D(-0.5f,-0.5f,0.5f) }
+		{ Vector3(0.5f,-0.5f,0.5f) },
+		{ Vector3(0.5f,0.5f,0.5f) },
+		{ Vector3(-0.5f,0.5f,0.5f)},
+		{ Vector3(-0.5f,-0.5f,0.5f) }
 	};
 
-	Vector2D texcoord_list[] =
+	Vector2 texcoord_list[] =
 	{
-		{ Vector2D(0.0f,0.0f) },
-		{ Vector2D(0.0f,1.0f) },
-		{ Vector2D(1.0f,0.0f) },
-		{ Vector2D(1.0f,1.0f) }
+		{ Vector2(0.0f,0.0f) },
+		{ Vector2(0.0f,1.0f) },
+		{ Vector2(1.0f,0.0f) },
+		{ Vector2(1.0f,1.0f) }
 	};
 
 	vertex vertex_list[] =

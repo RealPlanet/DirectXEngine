@@ -65,9 +65,9 @@ Mesh::Mesh(const wchar_t* full_path) : Resource(full_path)
 				tinyobj::real_t ny = attribs.normals[index.normal_index * 3 + 1];
 				tinyobj::real_t nz = attribs.normals[index.normal_index * 3 + 2];
 
-				Vector3D vert_pos = Vector3D(vx, vy, vz);
-				Vector2D texcoord = Vector2D(tx, ty);
-				Vector3D normals = Vector3D(nx, ny, nz);
+				Vector3 vert_pos = Vector3(vx, vy, vz);
+				Vector2 texcoord = Vector2(tx, ty);
+				Vector3 normals = Vector3(nx, ny, nz);
 
 				VertexMesh vertex( vert_pos, texcoord, normals );
 				list_verticies.push_back(vertex);
