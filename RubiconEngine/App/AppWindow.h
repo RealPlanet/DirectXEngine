@@ -12,17 +12,18 @@
 #include "..\Engine\Graphics\VertexShader.h"
 #include "..\Engine\Graphics\PixelShader.h"
 #include "..\Engine\Graphics\DeviceContext.h"
+#include "Generics.h"
 
 class AppWindow : public Window, public InputListener
 {
 public:
 	
 
-	void drawMesh(const MeshPtr& mesh, const VertexShaderPtr& vs, const PixelShaderPtr& ps, const ConstantBufferPtr& cb,
-		const TexturePtr* texture, unsigned int num_textures);
+	void drawMesh(const MeshPtr& mesh, const MaterialPtr& material);
 	void updateCamera();
-	void updateModel();
+	void updateModel(Vector3 position, const MaterialPtr& material);
 	void updateSkybox();
+	void updateLight();
 
 	void render();
 	void update();
@@ -57,14 +58,22 @@ private:
 	PixelShaderPtr m_pixel_shader_skybox = nullptr;
 
 	TexturePtr m_wall_tex = nullptr;
-	TexturePtr m_earth_c_tex = nullptr;
-	TexturePtr m_earth_s_tex = nullptr;
-	TexturePtr m_earth_night_c_tex = nullptr;
+	TexturePtr m_bricks_tex = nullptr;
+	TexturePtr m_earth_color_tex = nullptr;
 	TexturePtr m_sky_tex = nullptr;
-	TexturePtr m_clouds_tex = nullptr;
+
 	MeshPtr m_mesh = nullptr;
+	MeshPtr m_mesh_torus = nullptr;
+	MeshPtr m_mesh_suzanne = nullptr;
+	MeshPtr m_mesh_plane = nullptr;
+
 	MeshPtr m_sky_mesh = nullptr;
 
+	MaterialPtr m_mat_sky;
+	MaterialPtr m_mat;
+	MaterialPtr m_mat_bricks;
+	MaterialPtr m_mat_earth;
+	
 	//Time elapsed between previous and current frame
 	DWORD m_old_delta = 0;
 	DWORD m_new_delta = 0;
@@ -89,5 +98,7 @@ private:
 
 	bool m_play_state = false;
 	bool m_fullscreen = false;
+
+	Vector4 m_light_position;
 };
 

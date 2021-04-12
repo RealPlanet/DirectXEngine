@@ -55,6 +55,15 @@
     <Filter Include="Shaders">
       <UniqueIdentifier>{a22acbfb-415e-4347-bab2-09d87e9cd1dd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\ResouceManager\Resources\Texture">
+      <UniqueIdentifier>{7df08a09-4b0c-4f3b-ab1a-e567d193a1b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\ResouceManager\Resources\Mesh">
+      <UniqueIdentifier>{8f9620e8-5f89-4aed-8cb3-273b3f4e9798}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\ResouceManager\Resources\Material">
+      <UniqueIdentifier>{34cdbc4b-f84c-46a1-8012-f96d9762773a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App\AppWindow.cpp">
@@ -88,14 +97,8 @@
     <ClCompile Include="Engine\ResourceManager\ResourceManager.cpp">
       <Filter>Engine\ResouceManager</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\ResourceManager\Resources\Mesh.cpp">
-      <Filter>Engine\ResouceManager\Resources</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Graphics\SwapChain.cpp">
       <Filter>Engine\Graphics\SwapChain</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\ResourceManager\Resources\Texture.cpp">
-      <Filter>Engine\ResouceManager\Resources</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Window.cpp">
       <Filter>Engine\Window</Filter>
@@ -115,12 +118,20 @@
     <ClCompile Include="Engine\ResourceManager\Resources\Resource.cpp">
       <Filter>Engine\ResouceManager\Resources</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\ResourceManager\Resources\Texture.cpp">
+      <Filter>Engine\ResouceManager\Resources\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\ResourceManager\Resources\Mesh.cpp">
+      <Filter>Engine\ResouceManager\Resources\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\ResourceManager\Resources\Material.cpp">
+      <Filter>Engine\ResouceManager\Resources\Material</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App\AppWindow.h">
       <Filter>App</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Graphics\Prerequisites.h" />
     <ClInclude Include="Engine\Graphics\ConstantBuffer.h">
       <Filter>Engine\Graphics\ConstantBuffer</Filter>
     </ClInclude>
@@ -151,17 +162,11 @@
     <ClInclude Include="Engine\ResourceManager\ResourceManager.h">
       <Filter>Engine\ResouceManager</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\ResourceManager\Resources\Mesh.h">
-      <Filter>Engine\ResouceManager\Resources</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Utility\Point.h">
       <Filter>Engine\Utility</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Graphics\SwapChain.h">
       <Filter>Engine\Graphics\SwapChain</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\ResourceManager\Resources\Texture.h">
-      <Filter>Engine\ResouceManager\Resources</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Utility\Vector4.h">
       <Filter>Engine\Utility</Filter>
@@ -192,6 +197,21 @@
     </ClInclude>
     <ClInclude Include="Engine\ResourceManager\Resources\Resource.h">
       <Filter>Engine\ResouceManager\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\ResourceManager\Resources\Texture.h">
+      <Filter>Engine\ResouceManager\Resources\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\ResourceManager\Resources\Mesh.h">
+      <Filter>Engine\ResouceManager\Resources\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\ResourceManager\Resources\Material.h">
+      <Filter>Engine\ResouceManager\Resources\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Graphics\Prerequisites.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="App\Generics.h">
+      <Filter>App</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -26,7 +26,7 @@ cbuffer constant: register(b0)
 
 float4 main(PS_INPUT input) : SV_TARGET
 {
-	float4 tex_color = TextureColor.Sample(TextureColorSampler, (1.0 - input.texcoord) * 2);
+	float4 tex_color = TextureColor.Sample(TextureColorSampler, (1.0 - input.texcoord));
 
 //AMBIENT LIGHT CALC
 	float ka = 1.5;
