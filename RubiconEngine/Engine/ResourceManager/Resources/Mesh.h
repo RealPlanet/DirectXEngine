@@ -1,7 +1,7 @@
 #pragma once
 #include "Resource.h"
-#include "VertexBuffer.h"
-#include "IndexBuffer.h"
+#include "..\..\Graphics\VertexBuffer.h"
+#include "..\..\Graphics\IndexBuffer.h"
 
 class Mesh : public Resource
 {

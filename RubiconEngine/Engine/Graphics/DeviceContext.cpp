@@ -5,7 +5,7 @@
 #include "VertexShader.h"
 #include "PixelShader.h"
 #include "IndexBuffer.h"
-#include "Texture.h"
+#include "..\ResourceManager\Resources\Texture.h"
 #include <exception>
 
 DeviceContext::DeviceContext(RenderSystem* system, ID3D11DeviceContext* device_context)

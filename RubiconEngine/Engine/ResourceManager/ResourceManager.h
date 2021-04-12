@@ -1,8 +1,8 @@
 #pragma once
 #include <unordered_map>
 #include <string>
-#include "Prerequisites.h"
-#include "Resource.h"
+#include "..\Graphics\Prerequisites.h"
+#include "Resources\Resource.h"
 
 class ResourceManager
 {

@@ -2,7 +2,7 @@
 #include <Windows.h>
 #include <unordered_set>
 #include "InputListener.h"
-#include "Point.h"
+#include "..\Utility\Point.h"
 
 class InputSystem
 {

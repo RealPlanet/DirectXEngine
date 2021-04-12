@@ -4,10 +4,10 @@
 */
 
 #include <memory>
-#include "Vector2.h"
-#include "Vector3.h"
-#include "Vector4.h"
-#include "Matrix4x4.h"
+#include "..\Utility\Vector2.h"
+#include "..\Utility\Vector3.h"
+#include "..\Utility\Vector4.h"
+#include "..\Utility\Matrix4x4.h"
 
 class SwapChain;
 class DeviceContext;

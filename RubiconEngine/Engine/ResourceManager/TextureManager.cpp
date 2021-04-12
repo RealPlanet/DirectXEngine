@@ -1,5 +1,5 @@
 #include "TextureManager.h"
-#include "Texture.h"
+#include "Resources\Texture.h"
 
 TexturePtr TextureManager::createTextureFromFile(const wchar_t* file_path)
 {

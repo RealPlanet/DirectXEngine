@@ -1,5 +1,5 @@
 #include "AppWindow.h"
-#include "Mesh.h"
+#include "..\Engine\ResourceManager\Resources\Mesh.h"
 #include <Windows.h>
 #include <iostream>
 

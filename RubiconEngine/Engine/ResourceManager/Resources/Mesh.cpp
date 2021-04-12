@@ -1,8 +1,8 @@
 #define _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING 1 // Temp fix, codecvt_utf8 is deprecated in c++17
 
 #include "Mesh.h"
-#include "GraphicsEngine.h"
-#include "VertexMesh.h"
+#include "..\..\Graphics\GraphicsEngine.h"
+#include "..\..\Utility\VertexMesh.h"
 
 #pragma warning (push)
 #pragma warning( disable : 26495 )
@@ -11,7 +11,7 @@
 #pragma warning( disable : 26812 )
 #pragma warning( disable : 4267 )
 #define TINYOBJLOADER_IMPLEMENTATION
-#include <tiny_obj_loader.h>
+#include <tinyobjloader\include\tiny_obj_loader.h>
 #pragma warning(pop)
 
 #include <locale>

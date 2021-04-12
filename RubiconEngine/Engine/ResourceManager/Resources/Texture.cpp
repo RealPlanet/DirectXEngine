@@ -1,6 +1,7 @@
 #include "Texture.h"
-#include "GraphicsEngine.h"
-#include <DirectXTex.h>
+#include "..\..\Graphics\GraphicsEngine.h"
+#include <DirectXTex/include/DirectXTex.h>
+
 
 Texture::Texture(const wchar_t* full_path) : Resource(full_path)
 {

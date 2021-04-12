@@ -1,6 +1,6 @@
 #include <iostream>
-#include "AppWindow.h"
-#include "InputSystem.h"
+#include "App\AppWindow.h"
+#include "Engine\InputSystem\InputSystem.h"
 
 void ReleaseResources()
 {

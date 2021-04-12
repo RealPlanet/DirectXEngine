@@ -1,5 +1,5 @@
 #include "MeshManager.h"
-#include "Mesh.h"
+#include "Resources/Mesh.h"
 
 MeshPtr MeshManager::createMeshFromFile(const wchar_t* file_path)
 {

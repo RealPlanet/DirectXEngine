@@ -2,8 +2,8 @@
 #include <d3d11.h>
 #include "Prerequisites.h"
 #include "RenderSystem.h"
-#include "TextureManager.h"
-#include "MeshManager.h"
+#include "..\ResourceManager\TextureManager.h"
+#include "..\ResourceManager\MeshManager.h"
 
 class GraphicsEngine
 {
