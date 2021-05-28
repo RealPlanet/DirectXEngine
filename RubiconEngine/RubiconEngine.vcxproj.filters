@@ -64,6 +64,9 @@
     <Filter Include="Engine\ResouceManager\Resources\Material">
       <UniqueIdentifier>{34cdbc4b-f84c-46a1-8012-f96d9762773a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\External">
+      <UniqueIdentifier>{18334d4d-4187-42e0-9538-070a74b9b1cd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App\AppWindow.cpp">
@@ -212,6 +215,9 @@
     </ClInclude>
     <ClInclude Include="App\Generics.h">
       <Filter>App</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\tinyobjloader\include\tiny_obj_loader.h">
+      <Filter>Engine\External</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

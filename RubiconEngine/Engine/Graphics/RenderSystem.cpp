@@ -10,6 +10,7 @@
 #include "IndexBuffer.h"
 
 #include <exception>
+#include <iostream>
 
 RenderSystem::RenderSystem()
 {
@@ -99,7 +100,7 @@ VertexBufferPtr RenderSystem::createVertexBuffer(void* list_vertices, UINT size_
 	{
 		vb = std::make_shared<VertexBuffer>(this, list_vertices, size_vertex, size_list, shader_bytecode, size_byte_shader);
 	}
-	catch (...) {}
+	catch (...)	{}
 	return vb;
 }
 

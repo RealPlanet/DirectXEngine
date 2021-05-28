@@ -33,6 +33,7 @@ VS_OUTPUT main(VS_INPUT input)
 	//WORLD SPACE
 	output.position = mul(input.position, m_world);
 	output.direction_to_camera = normalize(output.position - m_camera_position.xyz);
+
 	//VIEW SPACE
 	output.position = mul(output.position, m_view);
 	//SCREEN SPACE

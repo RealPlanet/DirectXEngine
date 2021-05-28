@@ -206,6 +206,7 @@
     <ClInclude Include="Engine\Utility\Vector4.h" />
     <ClInclude Include="Engine\Utility\VertexMesh.h" />
     <ClInclude Include="Engine\Window.h" />
+    <ClInclude Include="Libs\tinyobjloader\include\tiny_obj_loader.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\PixelShader.hlsl">

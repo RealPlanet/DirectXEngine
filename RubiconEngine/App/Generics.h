@@ -17,7 +17,7 @@ struct constant
 	Vector4 m_camera_position;
 
 	Vector4 m_light_position = Vector4(0, 1, 0, 0);
-	float m_light_radius = 4.0f;
+	float m_light_radius = 500.0f;
 
 	float m_time = 0;
 };

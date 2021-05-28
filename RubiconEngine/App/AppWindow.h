@@ -19,9 +19,9 @@ class AppWindow : public Window, public InputListener
 public:
 	
 
-	void drawMesh(const MeshPtr& mesh, const MaterialPtr& material);
+	void drawMesh(const MeshPtr& mesh, const std::vector<MaterialPtr>& list_materials);
+	void updateModel(Vector3 position, const std::vector<MaterialPtr>& list_materials);
 	void updateCamera();
-	void updateModel(Vector3 position, const MaterialPtr& material);
 	void updateSkybox();
 	void updateLight();
 
@@ -57,23 +57,43 @@ private:
 	PixelShaderPtr m_pixel_shader = nullptr;
 	PixelShaderPtr m_pixel_shader_skybox = nullptr;
 
+#pragma region Textures
 	TexturePtr m_wall_tex = nullptr;
 	TexturePtr m_bricks_tex = nullptr;
 	TexturePtr m_earth_color_tex = nullptr;
 	TexturePtr m_sky_tex = nullptr;
+	TexturePtr m_sand_tex = nullptr;
 
+	TexturePtr m_barrel_tex = nullptr;
+	TexturePtr m_wood_tex = nullptr;
+	TexturePtr m_house_brick_tex = nullptr;
+	TexturePtr m_window_tex = nullptr;
+
+#pragma endregion
+#pragma region Materials
+	MaterialPtr m_sky_mtl;
+	MaterialPtr m_base_mtl;
+	MaterialPtr m_brick_mtl;
+	MaterialPtr m_earth_mtl;
+	MaterialPtr m_sand_mtl;
+
+	MaterialPtr m_barrel_mtl;
+	MaterialPtr m_house_brick_mtl;
+	MaterialPtr m_window_mtl;
+	MaterialPtr m_wood_mtl;
+
+	std::vector<MaterialPtr> m_list_materials;
+#pragma endregion
+#pragma region Meshes
 	MeshPtr m_mesh = nullptr;
 	MeshPtr m_mesh_torus = nullptr;
 	MeshPtr m_mesh_suzanne = nullptr;
 	MeshPtr m_mesh_plane = nullptr;
-
 	MeshPtr m_sky_mesh = nullptr;
+	MeshPtr m_terrain_mesh = nullptr;
+	MeshPtr m_house_mesh = nullptr;
+#pragma endregion
 
-	MaterialPtr m_mat_sky;
-	MaterialPtr m_mat;
-	MaterialPtr m_mat_bricks;
-	MaterialPtr m_mat_earth;
-	
 	//Time elapsed between previous and current frame
 	DWORD m_old_delta = 0;
 	DWORD m_new_delta = 0;

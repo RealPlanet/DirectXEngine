@@ -26,7 +26,7 @@ cbuffer constant: register(b0)
 
 float4 main(PS_INPUT input) : SV_TARGET
 {
-	float4 tex_color = TextureColor.Sample(TextureColorSampler, (1.0 - input.texcoord));
+	float4 tex_color = TextureColor.Sample(TextureColorSampler, float2(input.texcoord.x,1.0 - input.texcoord.y));
 
 //AMBIENT LIGHT CALC
 	float ka = 1.5;
@@ -55,7 +55,8 @@ float4 main(PS_INPUT input) : SV_TARGET
 //END
 
 //SPECULAR LIGHT CALC
-	float ks = 1.0;
+// Original KS = 1
+	float ks = 0.0; // for sand
 
 
 	float3 direction_to_camera = normalize(input.world_pos.xyz - m_camera_position.xyz);
@@ -71,3 +72,4 @@ float4 main(PS_INPUT input) : SV_TARGET
 	float3 final_light = ambient_light + diffuse_light + specular_light;
 	return float4(final_light, 1.0);
 }
+

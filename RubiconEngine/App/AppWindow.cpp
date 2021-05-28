@@ -8,14 +8,27 @@
 *  - Updated GetTickCount to GetTickCount64
 */
 
-void AppWindow::drawMesh(const MeshPtr& mesh, const MaterialPtr& material)
+void AppWindow::drawMesh(const MeshPtr& mesh, const std::vector<MaterialPtr>& list_materials)
 {
-	GraphicsEngine::get()->setMaterial(material);
 	// Set vertices to draw
 	GraphicsEngine::get()->getRenderSystem()->getImmediateDeviceContext()->setVertexBuffer(mesh->getVertexBuffer());
 	// Set indices to draw
 	GraphicsEngine::get()->getRenderSystem()->getImmediateDeviceContext()->setIndexBuffer(mesh->getIndexBuffer());
-	GraphicsEngine::get()->getRenderSystem()->getImmediateDeviceContext()->drawIndexedTriangleList(mesh->getIndexBuffer()->getSizeIndexList(), 0, 0);
+
+	for (size_t m = 0; m < mesh->getNumMaterialSlots(); m++)
+	{
+		if (m >= list_materials.size())
+		{
+			break;
+		}
+		MaterialSlot mat = mesh->getMaterialSlot(m);
+
+		GraphicsEngine::get()->setMaterial(list_materials[m]);
+		GraphicsEngine::get()->
+			getRenderSystem()->
+			getImmediateDeviceContext()->
+			drawIndexedTriangleList(mat.num_indices, 0, mat.start_index);
+	}
 }
 
 void AppWindow::updateCamera()
@@ -45,7 +58,7 @@ void AppWindow::updateCamera()
 	m_proj_cam.setPerspectiveFovLH(1.57f, float(width) / float(height), 0.1f, 100.0f);
 }
 
-void AppWindow::updateModel(Vector3 position, const MaterialPtr& material)
+void AppWindow::updateModel(Vector3 position, const std::vector<MaterialPtr>& list_materials)
 {
 	constant cc;
 	Matrix4x4 m_light_rot_matrix;
@@ -62,15 +75,18 @@ void AppWindow::updateModel(Vector3 position, const MaterialPtr& material)
 	cc.m_light_position = m_light_position;
 	cc.m_light_direction = m_light_rot_matrix.getZDirection();
 	cc.m_time = m_time; //GetTickCount();
-
-	material->setData(&cc, sizeof(constant));
+	for (size_t m = 0; m < list_materials.size(); m++)
+	{
+		list_materials[m]->setData(&cc, sizeof(constant));
+	}
 }
 
 void AppWindow::updateLight()
 {
 	m_light_rot_y += 1.57f * m_delta_time;
 	float dist_from_origin = 3.0f;
-	m_light_position = Vector4(cos(m_light_rot_y) * dist_from_origin, 1.0f, sin(m_light_rot_y) * dist_from_origin, 1.0f);	
+	//m_light_position = Vector4(cos(m_light_rot_y) * dist_from_origin, 1.0f, sin(m_light_rot_y) * dist_from_origin, 1.0f);	
+	m_light_position = Vector4(180, 140, 70, 1.0f);
 }
 
 void AppWindow::updateSkybox()
@@ -81,7 +97,7 @@ void AppWindow::updateSkybox()
 	cc.m_world.setTranslation(m_world_cam.getTranslation());
 	cc.m_view = m_view_cam;
 	cc.m_projection = m_proj_cam;
-	m_mat_sky->setData(&cc, sizeof(constant));
+	m_sky_mtl->setData(&cc, sizeof(constant));
 }
 
 void AppWindow::render()
@@ -93,24 +109,31 @@ void AppWindow::render()
 
 	update();
 
+	m_list_materials.clear();
+	m_list_materials.push_back(m_sand_mtl);
+	updateModel(Vector3(0, 0, 0), m_list_materials);
+	drawMesh(m_terrain_mesh, m_list_materials);
+
+	m_list_materials.clear();
+	m_list_materials.push_back(m_barrel_mtl);
+	m_list_materials.push_back(m_house_brick_mtl);
+	m_list_materials.push_back(m_window_mtl);
+	m_list_materials.push_back(m_wood_mtl);
+
 	for (int i = 0; i < 3; i++)
 	{
-		updateModel(Vector3(0, 0, 4*i), m_mat);
-		drawMesh(m_mesh_torus, m_mat); //Render ksybox
-
-		updateModel(Vector3(4, 0, 4*i), m_mat_earth);
-		drawMesh(m_sky_mesh, m_mat_earth); //Render model
-
-		updateModel(Vector3(-4, 0, 4*i), m_mat_bricks);
-		drawMesh(m_mesh_suzanne, m_mat_bricks); //Render model
+		for (int j = 0; j < 3; j++)
+		{
+			updateModel(Vector3(-14.f + 14.0f * i, 0, -14.f + 14.0f * j), m_list_materials);
+			drawMesh(m_house_mesh, m_list_materials);
+		}
 	}
+	
 
+	m_list_materials.clear();
+	m_list_materials.push_back(m_sky_mtl);
+	drawMesh(m_sky_mesh, m_list_materials); //Render model
 
-
-	drawMesh(m_sky_mesh, m_mat_sky); //Render model
-
-	updateModel(Vector3(0, -1, 0), m_mat);
-	drawMesh(m_mesh_plane, m_mat);
 
 	m_swap_chain->present(false);
 
@@ -134,32 +157,46 @@ void AppWindow::onCreate()
 	InputSystem::get()->showCursor(false);
 	m_play_state = true;
 
-	m_wall_tex = GraphicsEngine::get()->getTextureManager()->createTextureFromFile(L"Assets\\Textures\\_other\\wall.jpg");
-	m_bricks_tex = GraphicsEngine::get()->getTextureManager()->createTextureFromFile(L"Assets\\Textures\\_other\\brick.png");
-	m_earth_color_tex = GraphicsEngine::get()->getTextureManager()->createTextureFromFile(L"Assets\\Textures\\Earth\\earth_color.jpg");
-	m_sky_tex = GraphicsEngine::get()->getTextureManager()->createTextureFromFile(L"Assets\\Textures\\skyboxes\\stars_map.jpg");
+	m_sky_tex = GraphicsEngine::get()->getTextureManager()->createTextureFromFile(L"Assets\\Textures\\skyboxes\\sky.jpg");
+	m_sand_tex = GraphicsEngine::get()->getTextureManager()->createTextureFromFile(L"Assets\\Textures\\_other\\sand.jpg");
 
-	m_mat = GraphicsEngine::get()->createMaterial(L"Shaders\\PointLightVertexShader.hlsl", L"Shaders\\PointLightPixelShader.hlsl");
-	m_mat->addTexture(m_wall_tex);
-	m_mat->setCullMode(CULL_MODE_BACK);
+	m_wood_tex = GraphicsEngine::get()->getTextureManager()->createTextureFromFile(L"Assets\\Textures\\_other\\house_wood.jpg");
+	m_house_brick_tex = GraphicsEngine::get()->getTextureManager()->createTextureFromFile(L"Assets\\Textures\\_other\\house_brick.jpg");
+	m_window_tex = GraphicsEngine::get()->getTextureManager()->createTextureFromFile(L"Assets\\Textures\\_other\\house_windows.jpg");
+	m_barrel_tex = GraphicsEngine::get()->getTextureManager()->createTextureFromFile(L"Assets\\Textures\\_other\\barrel.jpg");
 
-	m_mat_earth = GraphicsEngine::get()->createMaterial(m_mat);
-	m_mat_earth->addTexture(m_earth_color_tex);
-	m_mat_earth->setCullMode(CULL_MODE_BACK);
+	m_base_mtl = GraphicsEngine::get()->createMaterial(L"Shaders\\PointLightVertexShader.hlsl", L"Shaders\\PointLightPixelShader.hlsl");
 
-	m_mat_bricks = GraphicsEngine::get()->createMaterial(m_mat);
-	m_mat_bricks->addTexture(m_bricks_tex);
-	m_mat_bricks->setCullMode(CULL_MODE_BACK);
+	m_sky_mtl = GraphicsEngine::get()->createMaterial(L"Shaders\\PointLightVertexShader.hlsl", L"Shaders\\SkyBoxShader.hlsl");
+	m_sky_mtl->addTexture(m_sky_tex);
+	m_sky_mtl->setCullMode(CULL_MODE_FRONT);
 
-	m_mat_sky = GraphicsEngine::get()->createMaterial(L"Shaders\\PointLightVertexShader.hlsl", L"Shaders\\SkyBoxShader.hlsl");
-	m_mat_sky->addTexture(m_sky_tex);
-	m_mat_sky->setCullMode(CULL_MODE_FRONT);
+	m_sand_mtl = GraphicsEngine::get()->createMaterial(m_base_mtl);
+	m_sand_mtl->addTexture(m_sand_tex);
+	m_sand_mtl->setCullMode(CULL_MODE_BACK);
 
-	m_mesh = GraphicsEngine::get()->getMeshManager()->createMeshFromFile(L"Assets\\Meshes\\scene.obj");
+	//All materials use the same shaders so copy the data from the m_base_mtl mtl
+	m_wood_mtl = GraphicsEngine::get()->createMaterial(m_base_mtl);
+	m_wood_mtl->addTexture(m_wood_tex);
+	m_wood_mtl->setCullMode(CULL_MODE_BACK);
+
+	m_house_brick_mtl = GraphicsEngine::get()->createMaterial(m_base_mtl);
+	m_house_brick_mtl->addTexture(m_house_brick_tex);
+	m_house_brick_mtl->setCullMode(CULL_MODE_BACK);
+
+	m_window_mtl = GraphicsEngine::get()->createMaterial(m_base_mtl);
+	m_window_mtl->addTexture(m_window_tex);
+	m_window_mtl->setCullMode(CULL_MODE_BACK);
+
+	m_barrel_mtl = GraphicsEngine::get()->createMaterial(m_base_mtl);
+	m_barrel_mtl->addTexture(m_barrel_tex);
+	m_barrel_mtl->setCullMode(CULL_MODE_BACK);
+
+
 	m_sky_mesh = GraphicsEngine::get()->getMeshManager()->createMeshFromFile(L"Assets\\Meshes\\sphere.obj");
-	m_mesh_torus = GraphicsEngine::get()->getMeshManager()->createMeshFromFile(L"Assets\\Meshes\\torus.obj");
-	m_mesh_suzanne = GraphicsEngine::get()->getMeshManager()->createMeshFromFile(L"Assets\\Meshes\\suzanne.obj");
-	m_mesh_plane = GraphicsEngine::get()->getMeshManager()->createMeshFromFile(L"Assets\\Meshes\\plane.obj");
+	m_terrain_mesh = GraphicsEngine::get()->getMeshManager()->createMeshFromFile(L"Assets\\Meshes\\terrain.obj");
+
+	m_house_mesh = GraphicsEngine::get()->getMeshManager()->createMeshFromFile(L"Assets\\Meshes\\house.obj");
 
 	m_swap_chain = GraphicsEngine::get()->getRenderSystem()->createSwapChain(this->m_hwnd, rect.right - rect.left, rect.bottom - rect.top);
 	m_world_cam.setTranslation(Vector3(0, 0, -3));
@@ -249,6 +286,7 @@ void AppWindow::onCreate()
 	UINT index_size = ARRAYSIZE(index_list);
 	m_index_buffer = GraphicsEngine::get()->getRenderSystem()->createIndexBuffer(index_list, index_size);
 	m_world_cam.setTranslation(Vector3(0, 0, -2));
+	m_list_materials.reserve(32);
 }
 
 void AppWindow::onUpdate()
